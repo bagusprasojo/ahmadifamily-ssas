@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-fs-pnot@=ka%yff=j7*eo6nzzbhf-f8a7_8c77+1*y$b)l&e=-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ahmadifamily.pythonanywhere.com','127.0.0.1','localhost']
 
 
 # Application definition
