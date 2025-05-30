@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+  {% block content_nav %}
+  <main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title light-background">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">{{current_page}}</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li class="current">{{current_page}}</li>
+          </ol>
+        </nav>
+      </div>
+    </div><!-- End Page Title -->
+
+    <!-- Starter Section Section -->
+    <div id="starter-section" class="px-3 py-4 light-background">
+
+      {% block content %}{% endblock %}
+
+    </div><!-- /Starter Section Section -->
+
+  </main>
+  {% endblock %}
+

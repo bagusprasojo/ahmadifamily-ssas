@@ -1,0 +1,103 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="mb-3">
+		<form method="get" action="{% url 'tree' 9 %}" onsubmit="this.action=this.action.replace('9', document.getElementById('husband_id').value)" class="border p-4 rounded bg-light">
+			<div class="row align-items-end">
+				<div class="col-md-8">
+					<label for="husband_id" class="h4">Choose a Man As Root</label>
+					<select id="husband_id" name="husband_id" class="form-select">
+						{% for p in persons %}
+							{% if p.gender == 'M' %}
+								<option value="{{ p.id }}">{{ p.name }}</option>
+							{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-4">
+					<button type="submit" class="btn btn-info w-100 mt-3">Show Family Tree</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+  <style type="text/css">
+	body {
+	    font: 10px sans-serif;
+	}
+	.linage {
+	    fill: none;
+	    stroke: #000;
+	}
+	.marriage {
+	    fill: none;
+	    stroke: black;
+	}
+	.marriageNode {
+			background-color: black;
+			border-radius: 50%;
+	}
+	.man {
+	    background-color: lightblue;
+			border-style: solid;
+			border-width: 1px;
+			box-sizing: border-box;
+	}
+	.woman {
+			background-color: pink;
+			border-style: solid;
+			border-width: 1px;
+			box-sizing: border-box;
+	}
+	.emphasis{
+			font-style: italic;
+	}
+	p {
+		padding:0;
+		margin:0;
+	}
+	svg {
+		border-style: solid;
+		border-width: 1px;
+	}
+</style>
+
+  
+ <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<script src="{% static 'treeapp/dTree.min.js' %}"></script>
+
+  <style>
+    .man { fill: #b3cde0; }
+    .woman { fill: #fbb4ae; }
+  </style>
+	
+
+    <div class="tree-container">
+        <div id="treeContainer"></div>
+    </div>
+
+    <script>
+        // Data pohon keluarga dari Django
+        const data = {{ tree_data|safe }};
+
+        dTree.init(data, {
+            target: "#treeContainer",
+            debug: true,
+            height: 600,
+            width: 1000,
+            callbacks: {
+                nodeClick: function(name, extra) {
+                    alert("Klik pada: " + name);
+                }
+            }
+        });
+    </script>
+
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="{% url 'input' %}">⬅️ Kembali ke Halaman Input</a>
+    </div>
+{% endblock%}

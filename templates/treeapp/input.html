@@ -1,0 +1,97 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+
+{% block content %}
+
+  <!-- Nav Tabs -->
+    <ul class="nav nav-tabs" id="familyTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="person-tab" data-bs-toggle="tab" data-bs-target="#person" type="button" role="tab">Tambah Person</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="marriage-tab" data-bs-toggle="tab" data-bs-target="#marriage" type="button" role="tab">Tambah Pernikahan</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="child-tab" data-bs-toggle="tab" data-bs-target="#child" type="button" role="tab">Tambah Anak</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tree-tab" data-bs-toggle="tab" data-bs-target="#tree" type="button" role="tab">Lihat Pohon</button>
+        </li>
+    </ul>
+
+    <!-- Tab Panes -->
+    <div class="tab-content mt-4" id="familyTabContent">
+        <!-- Person Tab -->
+        <div class="tab-pane fade show active" id="person" role="tabpanel">
+            <form method="post" class="border p-4 rounded bg-light">
+                {% csrf_token %}
+                {% for field in person_form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button name="add_person" type="submit" class="btn btn-primary">Simpan Person</button>
+            </form>
+        </div>
+
+        <!-- Marriage Tab -->
+        <div class="tab-pane fade" id="marriage" role="tabpanel">
+            <form method="post" class="border p-4 rounded bg-light">
+                {% csrf_token %}
+                {% for field in marriage_form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button name="add_marriage" type="submit" class="btn btn-success">Simpan Pernikahan</button>
+            </form>
+        </div>
+
+        <!-- Child Tab -->
+        <div class="tab-pane fade" id="child" role="tabpanel">
+            <form method="post" class="border p-4 rounded bg-light">
+                {% csrf_token %}
+                {% for field in child_form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button name="add_child" type="submit" class="btn btn-warning">Simpan Anak</button>
+            </form>
+        </div>
+
+        <!-- Tree Tab -->
+        <div class="tab-pane fade" id="tree" role="tabpanel">
+            <form method="get" action="{% url 'tree' 9 %}" onsubmit="this.action=this.action.replace('9', document.getElementById('husband_id').value)" class="border p-4 rounded bg-light">
+                <div class="row align-items-end">
+                    <div class="col-md-8">
+                        <label for="husband_id" class="form-label">Pilih Laki-laki sebagai akar pohon</label>
+                        <select id="husband_id" name="husband_id" class="form-select">
+                            {% for p in persons %}
+                                {% if p.gender == 'M' %}
+                                    <option value="{{ p.id }}">{{ p.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-info w-100 mt-3">Lihat Pohon</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+ 
+  {% endblock%}

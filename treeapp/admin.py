@@ -1,0 +1,19 @@
+from django.contrib import admin
+from .models import Person, Marriage, Child
+
+class MarriageInline(admin.ModelAdmin):
+    list_display = ('husband', 'wife', 'date_of_marriage')
+    search_fields = ('husband__name', 'wife__name')
+
+class ChildInline(admin.ModelAdmin):
+    list_display = ('person', 'marriage')
+    search_fields = ('person__name', 'marriage__husband__name', 'marriage__wife__name')
+    
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('name','gender','birth_date')
+    search_fields = ('name',)
+
+admin.site.register(Person, PersonAdmin)
+admin.site.register(Marriage, MarriageInline)
+admin.site.register(Child, ChildInline)
+
