@@ -1,0 +1,24 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Daftar Galeri</h2>
+    <div class="row">
+        {% for gallery in galleries %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if gallery.images.first %}
+                        <img src="{{ gallery.images.first.image.url }}" class="card-img-top" alt="Preview">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ gallery.title }}</h5>
+                        <a href="{% url 'gallery_detail' gallery.pk %}" class="btn btn-primary">Lihat Detail</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

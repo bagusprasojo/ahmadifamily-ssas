@@ -1,0 +1,36 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>{{ gallery.title }}</h2>
+    <p>{{ gallery.description }}</p>
+
+    {% if gallery.images.all %}
+    <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for image in gallery.images.all %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img src="{{ image.image.url }}" class="d-block w-100" alt="...">
+                    {% if image.caption %}
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                            <p>{{ image.caption }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+    {% else %}
+        <p>Belum ada gambar.</p>
+    {% endif %}
+
+    <a href="{% url 'gallery_list' %}" class="btn btn-secondary mt-4">← Kembali ke Daftar Galeri</a>
+</div>
+{% endblock %}

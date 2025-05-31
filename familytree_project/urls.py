@@ -25,6 +25,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('', include('treeapp.urls')),
     path('events/', include('eventapp.urls')),
+    path('gallery/', include('galleryapp.urls')),
 
 ]
 

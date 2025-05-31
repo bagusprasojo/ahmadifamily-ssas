@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'treeapp',
     'eventapp',
-    'ckeditor'
+    'ckeditor',
+    'galleryapp',
 ]
 
 MIDDLEWARE = [
