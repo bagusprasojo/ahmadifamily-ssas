@@ -1,0 +1,37 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container py-5">    
+    {% for event in events %}
+        <div class="card mb-4">
+            {% if event.images.all %}
+                <img src="{{ event.images.first.image.url }}" class="card-img-top" alt="Gambar Event">
+            {% endif %}
+            <div class="card-body">
+                <h4 class="card-title">{{ event.title }}</h4>
+                <div class="event-content">
+                    {{ event.content|truncatewords_html:100|safe }}
+                </div>
+            </div>
+            {% if event.images.all|length > 1 %}
+                <div class="row g-2 px-3 pb-3">
+                    {% for image in event.images.all|slice:"1:" %}
+                        <div class="col-md-4">
+                            <img src="{{ image.image.url }}" class="img-fluid rounded" alt="Gambar Event">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="card-footer text-muted">
+                Diposting pada {{ event.created_at|date:"d M Y H:i" }}
+            </div>
+        </div>
+
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+}
