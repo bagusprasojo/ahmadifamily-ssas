@@ -10,9 +10,12 @@
                 <img src="{{ event.images.first.image.url }}" class="card-img-top" alt="Gambar Event">
             {% endif %}
             <div class="card-body">
-                <h4 class="card-title">{{ event.title }}</h4>
+                <h4 class="card-title"><h4><a href="{% url 'event_detail' event.pk %}">{{ event.title }}</a></h4></h4>
                 <div class="event-content">
-                    {{ event.content|truncatewords_html:100|safe }}
+                    {{ event.content|truncatewords_html:100|safe }} 
+                    {% if event.content|length > 100 %}
+                        <a href="{% url 'event_detail' event.pk %}" class="btn btn-primary btn-sm">Baca Selengkapnya</a>
+                    {% endif %}
                 </div>
             </div>
             {% if event.images.all|length > 1 %}
