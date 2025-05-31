@@ -218,5 +218,47 @@
 
     </section><!-- /Recent Photos Section -->
 
+
+  <!-- Statistik Keluarga -->
+  <section class="section">
+    <div class="container section-title aos-init aos-animate" data-aos="fade-up">
+      <h2>Statistik Keluarga</h2>
+      <div class="row text-center">
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h5>Jumlah Anggota Laki-laki</h5>
+              <p class="display-6">{{ jumlah_laki_laki }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h5>Jumlah Anggota Perempuan</h5>
+              <p class="display-6">{{ jumlah_perempuan }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h5>Total Keluarga</h5>
+              <p class="display-6">{{ total_keluarga }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h5>Data Terakhir Diinput</h5>
+              <p>{{ keluarga_terakhir.name }}<br><small>{{ keluarga_terakhir.created_at|date:"d M Y" }}</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   </main>
 {% endblock %}
