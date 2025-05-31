@@ -1,0 +1,29 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+    <div style="text-align: center;">
+        <h2 class="mb-3">{{ event.title }}</h2>
+    </div>
+    {% if event.images.all %}
+        <img src="{{ event.images.first.image.url }}" class="card-img-top" alt="Gambar Event">
+    {% endif %}
+
+    <div class="mb-4 text-muted">Diposting pada {{ event.created_at|date:"d M Y H:i" }}</div>
+
+    <div class="mb-4">
+        {{ event.content|safe }}
+    </div>
+
+    <div class="row">
+        {% for image in event.images.all %}
+            <div class="col-md-4 mb-3">
+                <img src="{{ image.image.url }}" class="img-fluid rounded" alt="Gambar Event">
+            </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'event_list' %}" class="btn btn-secondary mt-4">← Kembali ke Daftar Event</a>
+</div>
+{% endblock %}
