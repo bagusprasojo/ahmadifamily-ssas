@@ -52,7 +52,12 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'tree' 0 %}">Family Tree</a></li>
+          {% if root_person %}
+              <li><a href="{% url 'tree' root_person.id %}">Family Tree</a></li>
+          {% else %}
+              <li><a href="{% url 'tree' 0 %}">Family Tree</a></li>
+          {% endif %}
+
           <li><a href="{% url 'event_list' %}">Events</a></li>
           <li><a href="{% url 'gallery_list' %}">Gallery</a></li>
           
@@ -68,7 +73,7 @@
   <footer id="footer" class="footer dark-background">
     <div class="container">
       <h3 class="sitename">Me &amp; Family</h3>
-      <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+      <p>Harta Yang Paling Berharga Adalah Keluarga</p>
       <div class="social-links d-flex justify-content-center">
         <a href=""><i class="bi bi-twitter-x"></i></a>
         <a href=""><i class="bi bi-facebook"></i></a>

@@ -125,6 +125,7 @@ def family_tree(request, husband_id):
     context = {
         'tree_data': tree_data,
         'current_page': 'Family Tree',
+        'husband_id': husband_id,
         'persons': persons,
     }
     return render(request, 'treeapp/tree.html', context)

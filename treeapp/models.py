@@ -10,6 +10,7 @@ class Person(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    is_root = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

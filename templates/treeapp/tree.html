@@ -11,7 +11,9 @@
 					<select id="husband_id" name="husband_id" class="form-select">
 						{% for p in persons %}
 							{% if p.gender == 'M' %}
-								<option value="{{ p.id }}">{{ p.name }}</option>
+								<!-- <option value="{{ p.id }}">{{ p.name }}</option> -->
+								<option value="{{ p.id }}" {% if p.id == husband_id %}selected{% endif %}>{{ p.name }}</option>
+								
 							{% endif %}
 						{% endfor %}
 					</select>
