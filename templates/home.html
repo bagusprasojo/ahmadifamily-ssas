@@ -162,11 +162,9 @@
     <!-- Recent Photos Section -->
     <section id="recent-photos" class="recent-photos section">
 
-      <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>Recent Photos</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-      </div><!-- End Section Title -->
+        <h2>Recent Photos</h2>        
+      </div>
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
@@ -201,22 +199,26 @@
               }
             }
           </script>
+
           <div class="swiper-wrapper align-items-center">
-            <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="assets/img/recent-photos/recent-photos-1.jpg"><img src="assets/img/recent-photos/recent-photos-1.jpg" class="img-fluid" alt=""></a></div>
-            <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="assets/img/recent-photos/recent-photos-2.jpg"><img src="assets/img/recent-photos/recent-photos-2.jpg" class="img-fluid" alt=""></a></div>
-            <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="assets/img/recent-photos/recent-photos-3.jpg"><img src="assets/img/recent-photos/recent-photos-3.jpg" class="img-fluid" alt=""></a></div>
-            <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="assets/img/recent-photos/recent-photos-4.jpg"><img src="assets/img/recent-photos/recent-photos-4.jpg" class="img-fluid" alt=""></a></div>
-            <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="assets/img/recent-photos/recent-photos-5.jpg"><img src="assets/img/recent-photos/recent-photos-5.jpg" class="img-fluid" alt=""></a></div>
-            <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="assets/img/recent-photos/recent-photos-6.jpg"><img src="assets/img/recent-photos/recent-photos-6.jpg" class="img-fluid" alt=""></a></div>
-            <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="assets/img/recent-photos/recent-photos-7.jpg"><img src="assets/img/recent-photos/recent-photos-7.jpg" class="img-fluid" alt=""></a></div>
-            <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="assets/img/recent-photos/recent-photos-8.jpg"><img src="assets/img/recent-photos/recent-photos-8.jpg" class="img-fluid" alt=""></a></div>
+            {% for photo in recent_photos %}
+              <div class="swiper-slide">
+                <a class="glightbox" data-gallery="images-gallery" href="{{ photo.image.url }}">
+                  <img src="{{ photo.image.url }}" class="img-fluid" alt="{{ photo.caption|default:'Photo' }}">
+                </a>
+              </div>
+            {% empty %}
+              <p class="text-center">Belum ada foto terbaru.</p>
+            {% endfor %}
           </div>
+
           <div class="swiper-pagination"></div>
         </div>
 
       </div>
 
-    </section><!-- /Recent Photos Section -->
+    </section>
+
 
 
   <!-- Statistik Keluarga -->
