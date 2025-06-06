@@ -10,7 +10,7 @@ class ChildInline(admin.ModelAdmin):
     search_fields = ('person__name', 'marriage__husband__name', 'marriage__wife__name')
     
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('name','gender','birth_date')
+    list_display = ('name','gender','birth_date', 'created_at', 'updated_at', 'is_root')
     search_fields = ('name',)
 
 admin.site.register(Person, PersonAdmin)
