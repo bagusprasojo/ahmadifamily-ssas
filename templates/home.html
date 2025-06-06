@@ -167,43 +167,58 @@
   <!-- Statistik Keluarga -->
   <section class="section">
     <div class="container section-title aos-init aos-animate" data-aos="fade-up">
-      <h2>Statistik Keluarga</h2>
-      <div class="row text-center">
+      <h2 class="mb-4">Statistik Keluarga</h2>
+      <div class="row text-center g-4">
+
+        <!-- Laki-laki -->
         <div class="col-md-3">
-          <div class="card">
-            <div class="card-body">
-              <h5>Anggota Laki-laki</h5>
-              <p class="display-6">{{ jumlah_laki_laki }}</p>
+          <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient" style="background: linear-gradient(135deg, #4e73df, #224abe); color: rgb(223, 14, 14);">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+              <i class="bi bi-gender-male display-4 mb-3"></i>
+              <h5 class="fw-semibold">Anggota Laki-laki</h5>
+              <p class="display-6 fw-bold">{{ jumlah_laki_laki }}</p>
             </div>
           </div>
         </div>
+
+        <!-- Perempuan -->
         <div class="col-md-3">
-          <div class="card">
-            <div class="card-body">
-              <h5>Anggota Perempuan</h5>
-              <p class="display-6">{{ jumlah_perempuan }}</p>
+          <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient" style="background: linear-gradient(135deg, #e83e8c, #c2185b); color: rgb(223, 14, 14);">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+              <i class="bi bi-gender-female display-4 mb-3"></i>
+              <h5 class="fw-semibold">Anggota Perempuan</h5>
+              <p class="display-6 fw-bold">{{ jumlah_perempuan }}</p>
             </div>
           </div>
         </div>
+
+        <!-- Total Anggota -->
         <div class="col-md-3">
-          <div class="card">
-            <div class="card-body">
-              <h5>Total Anggota Keluarga</h5>
-              <p class="display-6">{{ total_keluarga }}</p>
+          <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient" style="background: linear-gradient(135deg, #1cc88a, #17a673); color: rgb(223, 14, 14);">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+              <i class="bi bi-people-fill display-4 mb-3"></i>
+              <h5 class="fw-semibold">Total Anggota</h5>
+              <p class="display-6 fw-bold">{{ total_keluarga }}</p>
             </div>
           </div>
         </div>
+
+        <!-- Data Terakhir -->
         <div class="col-md-3">
-          <div class="card">
-            <div class="card-body">
-              <h5>Data Terakhir Diinput</h5>
-              <p>{{ keluarga_terakhir.name }}<br><small>{{ keluarga_terakhir.created_at|date:"d M Y" }}</small></p>
+          <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient" style="background: linear-gradient(135deg, #f6c23e, #dda20a); color: rgb(223, 14, 14);">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+              <i class="bi bi-clock-history display-4 mb-3"></i>
+              <h5 class="fw-semibold">Data Terakhir</h5>
+              <p class="mb-0 fw-bold">{{ keluarga_terakhir.name }}</p>
+              <small>{{ keluarga_terakhir.created_at|date:"d M Y" }}</small>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
+
 
   </main>
 {% endblock %}
