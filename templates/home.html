@@ -60,8 +60,38 @@
 
     </section><!-- /About Section -->
 
+    <!-- Ulang Tahun Section -->
+    <section class="section bg-light rounded">
+      <div class="container section-title aos-init aos-animate" data-aos="fade-up">
+        <h2><i class="bi bi-cake2-fill text-danger"></i> Ulang Tahun Bulan Ini</h2>
+        {% if ulang_tahun_bulan_ini %}
+          <ul class="list-group list-group-flush">
+            {% for orang in ulang_tahun_bulan_ini %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span>
+                {% if orang.gender == 'M' %}
+                  <i class="bi bi-person-fill text-primary"></i>
+                {% else %}
+                  <i class="bi bi-person-fill text-pink"></i>
+                {% endif %}
+                {{ orang.name }}
+              </span>
+              <span class="badge bg-warning text-dark">
+                {{ orang.birth_date|date:"d M" }}
+              </span>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">Tidak ada ulang tahun di bulan ini.</p>
+        {% endif %}
+      </div>
+    </section>
+    <!-- /Ulang Tahun Section -->
+
+    
     <!-- Recent Event -->
-    <section id="about" class="about section">
+    <section id="event" class="about section">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
@@ -103,7 +133,7 @@
     </section><!-- /Recent Event -->
 
     <!-- Recent Photos Section -->
-    <section id="recent-photos" class="recent-photos section">
+    <section id="recent-photos" class="section bg-light rounded">
 
       <div class="container section-title" data-aos="fade-up">
         <h2>Recent Photos</h2>        
