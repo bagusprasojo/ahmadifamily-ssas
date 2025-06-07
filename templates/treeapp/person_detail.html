@@ -1,0 +1,112 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+
+{% block content %}
+<section class="section mt-4">
+  <div class="container">
+    <div class="card shadow-lg">
+      <div class="row g-0">
+        <div class="col-md-4 text-center p-4">
+          <i class="bi bi-person-circle" style="font-size: 100px;"></i>
+          <h3 class="mt-3">{{ person.name }}</h3>
+          <p class="text-muted">{{ person.get_gender_display }}</p>
+          {% if person.is_root %}
+            <span class="badge bg-primary">Root Person</span>
+          {% endif %}
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">Informasi Pribadi</h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><strong>Nama:</strong> {{ person.name }}</li>
+              <li class="list-group-item"><strong>Jenis Kelamin:</strong> {{ person.get_gender_display }}</li>
+              <li class="list-group-item"><strong>Tanggal Lahir:</strong> 
+                {{ person.birth_date|date:"d M Y" }} {% if umur %} ({{ umur }} tahun){% endif %}
+              </li>
+              <li class="list-group-item"><strong>Dibuat pada:</strong> {{ person.created_at|date:"d M Y" }}</li>
+              <li class="list-group-item"><strong>Terakhir diupdate:</strong> {{ person.updated_at|date:"d M Y" }}</li>
+            </ul>
+            <a href="{% url 'tree' person.id %}" class="btn btn-outline-primary mt-3">
+              Lihat dalam Pohon Keluarga
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="card shadow-lg">  
+      <div class="card-body">
+        <h4 class="card-title">Pasangan</h4>
+        {% if spouse %}
+          <a href="{% url 'person_detail' spouse.id %}">{{ spouse.name }}</a>
+        {% else %}
+          <p><em>Belum ada pasangan</em></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="card shadow-lg">  
+      <div class="card-body">
+        <h4 class="card-title">Anak</h4>
+        {% if children %}
+          <ul>
+            {% for child in children %}
+              <li><a href="{% url 'person_detail' child.id %}">{{ child.name }}</a></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p><em>Tidak memiliki anak</em></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="card shadow-lg">  
+      <div class="card-body">
+        <h4 class="card-title">Orang Tua</h4>
+        {% if father or mother %}
+          <ul>
+            {% if father %}
+              <li>Ayah: <a href="{% url 'person_detail' father.id %}">{{ father.name }}</a></li>
+            {% endif %}
+            {% if mother %}
+              <li>Ibu: <a href="{% url 'person_detail' mother.id %}">{{ mother.name }}</a></li>
+            {% endif %}
+          </ul>
+        {% else %}
+          <p><em>Data orang tua belum tersedia</em></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="card shadow-lg">    
+      <div class="card-body">
+        <h4 class="card-title">Saudara Kandung</h4>
+        {% if siblings %}
+          <ul>
+            {% for sibling in siblings %}
+              <li><a href="{% url 'person_detail' sibling.id %}">{{ sibling.name }}</a></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p><em>Tidak ada saudara kandung terdaftar</em></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+
+
+
+
+{% endblock %}
