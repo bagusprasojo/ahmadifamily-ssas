@@ -50,7 +50,7 @@
           </div>
           <div class="col-lg-6 content">
             <p>
-              Kami adalah keluarga yang tinggal di Pedak, Karangwaru, Plupuh, Sragen, Jawa Tengah, yang dipimpin oleh Bapak Ahmadi bersama Ibu Siti Fathonah. Bersama lima anak kami — tiga perempuan dan dua laki-laki — kami menjalani kehidupan dengan penuh kasih sayang, kebersamaan, dan nilai-nilai yang saling menguatkan. Setiap momen dalam kehidupan keluarga kami adalah kisah yang berharga, dan melalui website ini, kami ingin berbagi sebagian dari perjalanan tersebut. Kami percaya bahwa keluarga adalah tempat pertama untuk belajar tentang cinta, kebersamaan, dan saling mendukung, baik dalam kebahagiaan maupun tantangan. Kami berharap dengan adanya website ini, keluarga, kerabat, dan sahabat yang mengunjungi dapat merasakan kehangatan dan kebahagiaan yang kami rasakan, serta semakin mempererat tali silaturahmi di antara kita. Terima kasih telah meluangkan waktu untuk mengenal lebih dekat keluarga Ahmadi.
+              Kami adalah keluarga yang tinggal di Pedak, Karangwaru, Plupuh, Sragen, Jawa Tengah, yang dipimpin oleh <a href="{% url 'person_detail' root_person.id %}">Bapak Ahmadi</a> bersama <a href="{% url 'person_detail' pasangan_root_person.id %}">Ibu Siti Fathonah</a>. Bersama lima anak kami — tiga perempuan dan dua laki-laki — kami menjalani kehidupan dengan penuh kasih sayang, kebersamaan, dan nilai-nilai yang saling menguatkan. Setiap momen dalam kehidupan keluarga kami adalah kisah yang berharga, dan melalui website ini, kami ingin berbagi sebagian dari perjalanan tersebut. Kami percaya bahwa keluarga adalah tempat pertama untuk belajar tentang cinta, kebersamaan, dan saling mendukung, baik dalam kebahagiaan maupun tantangan. Kami berharap dengan adanya website ini, keluarga, kerabat, dan sahabat yang mengunjungi dapat merasakan kehangatan dan kebahagiaan yang kami rasakan, serta semakin mempererat tali silaturahmi di antara kita. Terima kasih telah meluangkan waktu untuk mengenal lebih dekat keluarga Ahmadi.
             </p>
             
           </div>
@@ -74,7 +74,8 @@
                 {% else %}
                   <i class="bi bi-person-fill text-pink"></i>
                 {% endif %}
-                {{ orang.name }}
+                <a href="{% url 'person_detail' orang.id %}">{{ orang.name }}</a>
+                
               </span>
               <span class="badge bg-warning text-dark">
                 {{ orang.birth_date|date:"d M" }}

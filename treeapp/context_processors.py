@@ -1,7 +1,15 @@
-from .models import Person
+from .models import Person, Marriage
 
 def root_person(request):
+
+    pasangan_root = None
+
     root = Person.objects.filter(is_root=True).first()
+    if root:
+        pasangan_root = Marriage.objects.filter(husband=root).first().wife
+        
+
     return {
-        'root_person': root
+        'root_person': root,
+        'pasangan_root_person': pasangan_root
     }

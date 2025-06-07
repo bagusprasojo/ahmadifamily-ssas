@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Person, Marriage, Child
 from django import forms
-from django.forms import ModelForm
+from datetime import date
 
 # ----- FORM -----
 class PersonForm(forms.ModelForm):
@@ -129,3 +129,55 @@ def family_tree(request, husband_id):
         'persons': persons,
     }
     return render(request, 'treeapp/tree.html', context)
+
+def person_detail(request, person_id):
+    person = get_object_or_404(Person, pk=person_id)
+
+    # Hitung umur
+    def hitung_umur(birth_date):
+        today = date.today()
+        return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
+    umur = hitung_umur(person.birth_date) if person.birth_date else None
+
+
+    # Cari pasangan (suami/istri)
+    if person.gender == 'M':
+        marriage = Marriage.objects.filter(husband=person).first()
+        spouse = marriage.wife if marriage else None
+    else:
+        marriage = Marriage.objects.filter(wife=person).first()
+        spouse = marriage.husband if marriage else None
+
+    # Cari anak (jika dia orang tua)
+    marriages_as_parent = Marriage.objects.filter(husband=person) | Marriage.objects.filter(wife=person)
+    children = Person.objects.filter(child__marriage__in=marriages_as_parent)
+
+    # Cari orang tua (jika dia anak)
+    child_record = None
+    try:
+        child_record = Child.objects.get(person=person)
+        father = child_record.marriage.husband
+        mother = child_record.marriage.wife
+    except Child.DoesNotExist:
+        father = None
+        mother = None
+
+    # Cari saudara kandung (anak-anak dari pernikahan yang sama)
+    siblings = Person.objects.none()
+    if child_record:
+        siblings = Person.objects.filter(child__marriage=child_record.marriage).exclude(id=person.id)
+
+    context = {
+        'person': person,
+        'spouse': spouse,
+        'children': children,
+        'father': father,
+        'mother': mother,
+        'siblings': siblings,
+        'umur': umur,
+        'current_page': f'Profil {person.name}',
+    }
+
+    return render(request, 'treeapp/person_detail.html', context)
+
