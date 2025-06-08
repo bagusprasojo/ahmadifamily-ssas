@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Person, Marriage, Child, VisitorLog
+from django.utils.timezone import localtime
 
 class MarriageInline(admin.ModelAdmin):
     list_display = ('husband', 'wife', 'date_of_marriage')
@@ -15,6 +16,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 @admin.register(VisitorLog)
 class VisitorLogAdmin(admin.ModelAdmin):
+    # local_time = localtime(log.timestamp)
     list_display = ('ip_address', 'path', 'timestamp')
     search_fields = ('ip_address', 'path', 'user_agent')
     list_filter = ('timestamp',)
