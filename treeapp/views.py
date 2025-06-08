@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Person, Marriage, Child
 from django import forms
 from datetime import date
+from django.urls import reverse
 
 # ----- FORM -----
 class PersonForm(forms.ModelForm):
@@ -77,6 +78,7 @@ def input_data(request):
     return render(request, 'treeapp/input.html', context)
 
 def build_person_node(person):
+        
         # Ambil semua pernikahan sebagai suami atau istri
         if person.gender == 'M':
             marriages = Marriage.objects.filter(husband=person)
@@ -95,15 +97,27 @@ def build_person_node(person):
             marriage_data.append({
                 'spouse': {
                     'name': spouse.name,
-                    'class': 'man' if spouse.gender == 'M' else 'woman'
+                    'class': 'man' if spouse.gender == 'M' else 'woman',
+                    "textClass": "node-text",
+                    "HTMLclass": "clickable-node",
+                    "extra": {
+                        "person_id": spouse.id,
+                        "href": reverse('person_detail', args=[spouse.id])
+                    }
                 },
                 'children': child_nodes
             })
 
         return {
-            'name': person.name,
+            'name': person.name,            
             'class': 'man' if person.gender == 'M' else 'woman',
-            'marriages': marriage_data
+            'marriages': marriage_data,
+            "textClass": "node-text",
+            "HTMLclass": "clickable-node",
+            "extra": {
+                "person_id": person.id,
+                "href": reverse('person_detail', args=[person.id])
+            }
         }
 
 
@@ -121,6 +135,7 @@ def family_tree(request, husband_id):
         })
 
     tree_data = [build_person_node(person)]
+    # print(tree_data)
 
     context = {
         'tree_data': tree_data,
