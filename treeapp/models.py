@@ -1,5 +1,16 @@
 from django.db import models
+from django.utils.timezone import now
 
+class VisitorLog(models.Model):
+    path = models.CharField(max_length=255)
+    ip_address = models.GenericIPAddressField()
+    user_agent = models.TextField()
+    referer = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return f"{self.ip_address} - {self.path} @ {self.timestamp.strftime('%Y-%m-%d %H:%M')}"
+    
 class Person(models.Model):
     GENDER_CHOICES = [
         ('M', 'Male'),

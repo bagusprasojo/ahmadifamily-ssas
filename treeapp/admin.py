@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Person, Marriage, Child
+from .models import Person, Marriage, Child, VisitorLog
 
 class MarriageInline(admin.ModelAdmin):
     list_display = ('husband', 'wife', 'date_of_marriage')
@@ -12,6 +12,12 @@ class ChildInline(admin.ModelAdmin):
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('name','gender','birth_date', 'created_at', 'updated_at', 'is_root')
     search_fields = ('name',)
+
+@admin.register(VisitorLog)
+class VisitorLogAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'path', 'timestamp')
+    search_fields = ('ip_address', 'path', 'user_agent')
+    list_filter = ('timestamp',)
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Marriage, MarriageInline)

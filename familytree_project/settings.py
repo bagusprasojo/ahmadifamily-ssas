@@ -53,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'treeapp.middleware.VisitorLogMiddleware',  # middleware untuk mencatat log pengunjung
+    
 ]
 
 ROOT_URLCONF = 'familytree_project.urls'
