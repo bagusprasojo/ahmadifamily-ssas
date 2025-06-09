@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'eventapp',
     'ckeditor',
     'galleryapp',
+    'familytree_project',  # pastikan nama aplikasi sesuai dengan nama folder
 ]
 
 MIDDLEWARE = [

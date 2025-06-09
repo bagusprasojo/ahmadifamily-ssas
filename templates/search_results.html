@@ -1,0 +1,65 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+{% load custom_filters %}
+
+
+{% block content %}
+  <div class="container mt-5">
+    <h3>Hasil pencarian untuk: "{{ query }}"</h3>
+
+    <hr>
+    <h4>📅 Event</h4>
+    {% if event_results %}
+    <ul class="list-group mb-4">
+        {% for event in event_results %}
+        <li class="list-group-item">
+            <strong><a href="{% url 'event_detail' event.id %}">{{ event.title }}</a></strong><br>
+
+            {# Cek apakah keyword muncul di content, lalu tampilkan ringkasan #}
+            {% if query|lower in event.content|lower %}
+            <small>
+                {{ event.content|snippet_around_keyword:query }}
+            </small>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Tidak ditemukan event yang cocok.</p>
+    {% endif %}
+
+
+    <hr>
+    <h4>🖼️ Gallery</h4>
+    {% if gallery_results %}
+    <ul class="list-group mb-4">
+        {% for gallery in gallery_results %}
+        <li class="list-group-item">
+            <strong><a href="{% url 'gallery_detail' gallery.id %}">{{ gallery.title }}</a></strong><br>
+
+            {% if query|lower in gallery.description|lower %}
+            <small>
+                {{ gallery.description|snippet_around_keyword:query }}
+            </small>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Tidak ditemukan galeri yang cocok.</p>
+    {% endif %}
+
+
+    <hr>
+    <h4>👤 Person</h4>
+    {% if person_results %}
+      <ul>
+        {% for person in person_results %}
+          <li><a href="{% url 'person_detail' person.id %}">{{ person.name }}</a></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Tidak ditemukan nama yang cocok.</p>
+    {% endif %}
+  </div>
+{% endblock %}

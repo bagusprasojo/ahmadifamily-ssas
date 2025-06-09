@@ -47,10 +47,19 @@
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1 class="sitename">The Ahmadis</h1>
+        
       </a>
 
+        
       <nav id="navmenu" class="navmenu">
         <ul>
+          <li>
+            <form action="{% url 'search' %}" method="get" class="d-flex ms-4 me-auto" role="search">
+              <input class="form-control form-control-sm me-2" type="search" name="q" placeholder="Search..." aria-label="Search" style="width: 200px;">
+              <button class="btn btn-outline-light btn-sm" type="submit">🔍</button>
+            </form>      
+          </li>
+
           <li><a href="{% url 'home' %}">Home</a></li>
           {% if root_person %}
               <li><a href="{% url 'tree' root_person.id %}">Family Tree</a></li>

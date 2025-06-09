@@ -4,6 +4,7 @@ from galleryapp.models import Gallery, GalleryImage
 from eventapp.models import  Event 
 from treeapp.models import Person
 from datetime import datetime
+from django.db.models import Q
 
 def home(request):
     latest_event = Event.objects.order_by('-created_at').prefetch_related('images').first()
@@ -32,3 +33,19 @@ def home(request):
     }
 
     return render(request, 'home.html', context)
+
+def search_view(request):
+    query = request.GET.get('q', '')
+
+    event_results = Event.objects.filter(Q(title__icontains=query) | Q(content__icontains=query))
+    gallery_results = Gallery.objects.filter(Q(title__icontains=query)| Q(description__icontains=query))
+    person_results = Person.objects.filter(Q(name__icontains=query))
+
+    context = {
+        'query': query,
+        'event_results': event_results,
+        'gallery_results': gallery_results,
+        'person_results': person_results,
+        'current_page': 'Search Results',
+    }
+    return render(request, 'search_results.html', context)

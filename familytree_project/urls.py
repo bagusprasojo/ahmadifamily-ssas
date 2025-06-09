@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('treeapp.urls')),
     path('events/', include('eventapp.urls')),
     path('gallery/', include('galleryapp.urls')),
+    path('search/', views.search_view, name='search'),
 
 ]
 
