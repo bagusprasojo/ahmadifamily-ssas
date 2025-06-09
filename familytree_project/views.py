@@ -37,6 +37,9 @@ def home(request):
 def search_view(request):
     query = request.GET.get('q', '')
 
+    if not query:
+        return render(request, 'search_results.html', {'query': query, 'current_page': 'Search Results'})
+
     event_results = Event.objects.filter(Q(title__icontains=query) | Q(content__icontains=query))
     gallery_results = Gallery.objects.filter(Q(title__icontains=query)| Q(description__icontains=query))
     person_results = Person.objects.filter(Q(name__icontains=query))
