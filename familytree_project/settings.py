@@ -72,6 +72,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'treeapp.context_processors.root_person',  # context processor untuk root person
+                'treeapp.context_processors.app_config',  # context processor untuk app config
+                'treeapp.context_processors.image_carousel',  # context processor untuk image carousel
             ],
         },
     },

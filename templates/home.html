@@ -9,17 +9,12 @@
 
       <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
 
+        {% for img in image_carousel %}
         <div class="carousel-item active">
-          <img src="{% static 'assets/img/hero-carousel/Tropical Family in Serene Village.png' %}" alt="">
+          <img src="{{ img.image.url }}" alt="">
         </div><!-- End Carousel Item -->
+        {% endfor %}
 
-        <div class="carousel-item">
-          <img src="{% static 'assets/img/hero-carousel/Family Walk in Lush Countryside.png' %}" alt="">
-        </div><!-- End Carousel Item -->
-
-        <div class="carousel-item">
-          <img src="{% static 'assets/img/hero-carousel/Traditional Family Bonding in Bamboo Home.png' %}" alt="">
-        </div><!-- End Carousel Item -->
         <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
           <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
         </a>
@@ -32,6 +27,8 @@
 
       </div>
 
+      
+
     </section><!-- /Hero Section -->
 
     <!-- About Section -->
@@ -39,19 +36,18 @@
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>The Ahmadis</h2>        
+        <h2>{{ about_article.title }}</h2>        
       </div><!-- End Section Title -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
         <div class="row gy-4">
           <div class="col-lg-6">
-            <img src="media/family-home.jpg" class="img-fluid" alt="">
+            <img src="{{ about_article.image.url }}" class="img-fluid" alt="">
           </div>
           <div class="col-lg-6 content">
-            <p>
-              Kami adalah keluarga yang tinggal di Pedak, Karangwaru, Plupuh, Sragen, Jawa Tengah, yang dipimpin oleh <a href="{% url 'person_detail' root_person.id %}">Bapak Ahmadi</a> bersama <a href="{% url 'person_detail' pasangan_root_person.id %}">Ibu Siti Fathonah</a>. Bersama lima anak kami — tiga perempuan dan dua laki-laki — kami menjalani kehidupan dengan penuh kasih sayang, kebersamaan, dan nilai-nilai yang saling menguatkan. Setiap momen dalam kehidupan keluarga kami adalah kisah yang berharga, dan melalui website ini, kami ingin berbagi sebagian dari perjalanan tersebut. Kami percaya bahwa keluarga adalah tempat pertama untuk belajar tentang cinta, kebersamaan, dan saling mendukung, baik dalam kebahagiaan maupun tantangan. Kami berharap dengan adanya website ini, keluarga, kerabat, dan sahabat yang mengunjungi dapat merasakan kehangatan dan kebahagiaan yang kami rasakan, serta semakin mempererat tali silaturahmi di antara kita. Terima kasih telah meluangkan waktu untuk mengenal lebih dekat keluarga Ahmadi.
-            </p>
+            {{about_article.content|safe}}
+            
             
           </div>
         </div>
