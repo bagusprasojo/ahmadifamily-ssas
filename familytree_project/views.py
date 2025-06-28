@@ -2,11 +2,12 @@ from django.shortcuts import render
 from eventapp.models import Event
 from galleryapp.models import Gallery, GalleryImage 
 from eventapp.models import  Event 
-from treeapp.models import Person
+from treeapp.models import Person, AboutArticle
 from datetime import datetime
 from django.db.models import Q
 
 def home(request):
+    about_article = AboutArticle.objects.all().first()
     latest_event = Event.objects.order_by('-created_at').prefetch_related('images').first()
     recent_photos = GalleryImage.objects.order_by('-id')[:10]
 
@@ -23,6 +24,7 @@ def home(request):
 
     context = {
         'current_page': 'Home',
+        'about_article': about_article,
         'recent_event': latest_event,
         'jumlah_laki_laki': jumlah_laki_laki,
         'jumlah_perempuan': jumlah_perempuan,

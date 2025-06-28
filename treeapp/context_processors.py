@@ -14,3 +14,22 @@ def root_person(request):
         'root_person': root,
         'pasangan_root_person': pasangan_root
     }
+
+def app_config(request):
+    from .models import AppConfig
+
+    config = AppConfig.objects.all()
+    config_dict = {item.name: item.value for item in config}
+
+    return {
+        'app_config': config_dict
+    }
+
+def image_carousel(request):
+    from .models import ImageCarousel
+
+    images = ImageCarousel.objects.all().order_by('order')
+
+    return {
+        'image_carousel': images
+    }   
