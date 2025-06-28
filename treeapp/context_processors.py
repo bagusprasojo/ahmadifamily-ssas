@@ -6,7 +6,7 @@ def root_person(request):
 
     root = Person.objects.filter(is_root=True).first()
     if root : 
-        if Person.objects.all().count() > 2:
+        if Person.objects.all().count() > 1:
             pasangan_root = Marriage.objects.filter(husband=root).first().wife
         
 
