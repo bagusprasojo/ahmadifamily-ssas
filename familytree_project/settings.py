@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-fs-pnot@=ka%yff=j7*eo6nzzbhf-f8a7_8c77+1*y$b)l&e=-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ahmadifamily.pythonanywhere.com','127.0.0.1','localhost']
+ALLOWED_HOSTS = ['ahmadifamily.pythonanywhere.com','127.0.0.1','localhost','myfamily.pythonanywhere.com','keluargaku.pythonanywhere.com']
 
 
 # Application definition
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'treeapp.middleware.VisitorLogMiddleware',  # middleware untuk mencatat log pengunjung
-    
+
 ]
 
 ROOT_URLCONF = 'familytree_project.urls'
