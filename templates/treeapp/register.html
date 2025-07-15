@@ -1,0 +1,66 @@
+{% extends "base_navigasi.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0"><i class="fas fa-user-plus"></i> Registrasi Akun & Keluarga</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="id_username" class="form-label"><i class="fas fa-user"></i> Username</label>
+                {{ form.username }}
+                <div class="invalid-feedback">Masukkan username.</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="id_email" class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                {{ form.email }}
+                <div class="invalid-feedback">Masukkan email yang valid.</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="id_password1" class="form-label"><i class="fas fa-lock"></i> Password</label>
+                {{ form.password1 }}
+                <div class="invalid-feedback">Masukkan password.</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="id_password2" class="form-label"><i class="fas fa-lock"></i> Ulangi Password</label>
+                {{ form.password2 }}
+                <div class="invalid-feedback">Ulangi password dengan benar.</div>
+              </div>
+              <div class="col-md-12 mb-3">
+                <label for="id_family_name" class="form-label"><i class="fas fa-house-user"></i> Nama Keluarga</label>
+                {{ form.family_name }}
+                <div class="invalid-feedback">Masukkan nama keluarga.</div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-check-circle"></i> Daftar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Validasi Bootstrap 5
+  (() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+{% endblock %}

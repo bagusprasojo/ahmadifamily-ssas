@@ -29,6 +29,9 @@
   <!-- Main CSS File -->
   <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
 
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
   <!-- =======================================================
   * Template Name: MeFamily
   * Template URL: https://bootstrapmade.com/family-multipurpose-html-bootstrap-template-free/
@@ -61,14 +64,21 @@
           </li>
 
           <li><a href="{% url 'home' %}">Home</a></li>
-          {% if root_person %}
-              <li><a href="{% url 'tree' root_person.id %}">Family Tree</a></li>
-          {% else %}
-              <li><a href="{% url 'tree' 0 %}">Family Tree</a></li>
-          {% endif %}
-
+          
           <li><a href="{% url 'event_list' %}">Events</a></li>
           <li><a href="{% url 'gallery_list' %}">Gallery</a></li>
+          {% if user.is_authenticated %}
+              {% if root_person %}
+                  <li><a href="{% url 'tree' root_person.uuid %}">Family Tree</a></li>
+              {% else %}
+                  <li><a href="{% url 'tree' abc %}">Family Tree</a></li>
+              {% endif %}
+
+              <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li><a href="{% url 'logout' %}">Logout</a></li>
+          {% else %}
+              <li><a href="{% url 'login' %}">Login</a></li>
+          {% endif %}
           
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

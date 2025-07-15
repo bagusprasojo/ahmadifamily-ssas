@@ -1,50 +1,104 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Person, Marriage, Child
-from django import forms
 from datetime import date
 from django.urls import reverse
+from .forms import RegistrationForm, PersonForm, MarriageForm, ChildForm, AddChildrenForm
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
-# ----- FORM -----
-class PersonForm(forms.ModelForm):
-    class Meta:
-        model = Person
-        fields = ['name', 'gender', 'birth_date']
-        widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nama lengkap'
-            }),
-            'gender': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'birth_date': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-        }
+@login_required
+def tambah_anak_view(request):
+    family = request.user.family
+    if not family:
+        return redirect('dashboard')
 
-class MarriageForm(forms.Form):
-    husband = forms.ModelChoiceField(
-        queryset=Person.objects.filter(gender='M'),
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-    wife = forms.ModelChoiceField(
-        queryset=Person.objects.filter(gender='F'),
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-    date_of_marriage = forms.DateField(
-        required=False,
-        widget=forms.DateInput(attrs={
-            'class': 'form-control',
-            'type': 'date',
-            'placeholder': 'Tanggal Pernikahan (opsional)'
-        })
-    )
-class ChildForm(forms.Form):
-    person = forms.ModelChoiceField(queryset=Person.objects.all())
-    marriage = forms.ModelChoiceField(queryset=Marriage.objects.all())
+    if request.method == 'POST':
+        form = AddChildrenForm(request.POST, family=family)
+        if form.is_valid():
+            marriage = form.cleaned_data['marriage']
+            children = form.cleaned_data['children']
+            for child in children:
+                Child.objects.create(
+                    person=child,
+                    marriage=marriage,
+                    family=family
+                )
+            messages.success(request, f"{children.count()} anak berhasil ditambahkan ke pernikahan.")
+            return redirect('dashboard')
+    else:
+        form = AddChildrenForm(family=family)
 
-# ----- VIEWS -----
+    return render(request, 'treeapp/tambah_anak.html', {'form': form})
+
+
+@login_required
+def tambah_pernikahan_view(request):
+    family = request.user.family
+    if not family:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = MarriageForm(request.POST, family=family)
+        if form.is_valid():
+            marriage = form.save(commit=False)
+            marriage.family = family
+            marriage.save()
+            return redirect('dashboard')
+    else:
+        form = MarriageForm(family=family)
+    
+    return render(request, 'treeapp/tambah_pernikahan.html', {'form': form})
+
+
+@login_required
+def tambah_anggota_view(request):
+    if not request.user.family:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            person = form.save(commit=False)
+            person.family = request.user.family
+            person.save()
+            return redirect('dashboard')
+    else:
+        form = PersonForm()
+    
+    return render(request, 'treeapp/tambah_anggota.html', {'form': form})
+
+@login_required
+def dashboard_view(request):
+    family = request.user.family
+    if not family:
+        return redirect('register')  # jika user belum terhubung ke keluarga
+
+    members = family.members.all()
+    marriages = family.marriages.select_related('husband', 'wife').all()
+    children = family.children_family.select_related('person', 'marriage__husband', 'marriage__wife').all()
+
+
+    return render(request, 'treeapp/dashboard.html', {
+        'family': family,
+        'members': members,
+        'marriages': marriages,
+        'children': children,
+        'user': request.user,
+        'current_page': 'Dashboard Keluarga',
+    })
+
+
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # langsung login setelah register
+            return redirect('dashboard')  # arahkan ke halaman keluarga atau dashboard
+    else:
+        form = RegistrationForm()
+    return render(request, 'treeapp/register.html', {'form': form})
 
 def input_data(request):
     person_form = PersonForm(request.POST or None, prefix='person')
@@ -121,11 +175,11 @@ def build_person_node(person):
         }
 
 
-
-def family_tree(request, husband_id):
-    persons = Person.objects.all().order_by('name')
+@login_required
+def family_tree(request, uuid):
+    persons = Person.objects.all().filter(family = request.user.family).order_by('name')
     try:
-        person = Person.objects.get(pk=husband_id)
+        person = Person.objects.get(uuid=uuid)
     except Person.DoesNotExist:
         return render(request, 'treeapp/tree.html', {
             'tree_data': [],
@@ -140,7 +194,7 @@ def family_tree(request, husband_id):
     context = {
         'tree_data': tree_data,
         'current_page': 'Family Tree',
-        'husband_id': husband_id,
+        'husband_uuid': person.uuid,
         'persons': persons,
     }
     return render(request, 'treeapp/tree.html', context)

@@ -1,0 +1,146 @@
+{% extends 'base_navigasi.html' %}
+{% load static %}
+
+<style>
+    .nav-tabs .nav-link.active {
+    background-color: #f8f9fa;
+    border-color: #dee2e6 #dee2e6 #fff;
+    font-weight: bold;
+}  
+</style>
+
+{% block content %}
+<div class="container mt-3">
+    <ul class="nav nav-tabs" id="familyTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="person-tab" data-bs-toggle="tab" data-bs-target="#person" type="button" role="tab">👥 Anggota Keluarga</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="marriage-tab" data-bs-toggle="tab" data-bs-target="#marriage" type="button" role="tab">💍 Pernikahan</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="child-tab" data-bs-toggle="tab" data-bs-target="#child" type="button" role="tab">👶 Daftar Anak</button>
+        </li>        
+    </ul>
+
+    <div class="tab-content mt-4" id="familyTabContent">
+        <div class="tab-pane fade show active" id="person" role="tabpanel">
+            {% if members %}
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                    <th>Nama</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Tanggal Lahir</th>
+                    <th>Akar Pohon?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for person in members %}
+                    <tr>
+                    <td>{{ person.name }}</td>
+                    <td>{{ person.get_gender_display }}</td>
+                    <td>{{ person.birth_date|date:"d M Y" }}</td>
+                    <td>
+                        {% if person.is_root %}
+                        <span class="badge bg-success">Ya</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Tidak</span>
+                        {% endif %}
+                    </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">Belum ada anggota keluarga.</div>
+            {% endif %}
+
+            <a href="{% url 'tambah_anggota' %}" class="btn btn-sm btn-outline-primary mb-3">
+                <i class="fas fa-user-plus"></i> Tambah Anggota
+            </a>
+        </div>
+        
+        <div class="tab-pane fade" id="marriage" role="tabpanel">
+            {% if marriages %}
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                    <th>Suami</th>
+                    <th>Istri</th>
+                    <th>Tanggal Pernikahan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in marriages %}
+                    <tr>
+                    <td>{{ m.husband.name }}</td>
+                    <td>{{ m.wife.name }}</td>
+                    <td>{{ m.date_of_marriage|date:"d M Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">Belum ada data pernikahan.</div>
+            {% endif %}
+
+            <a href="{% url 'tambah_pernikahan' %}" class="btn btn-sm btn-outline-warning mb-3">
+                <i class="fas fa-ring"></i> Tambah Pernikahan
+            </a>
+        </div>
+
+        <div class="tab-pane fade" id="child" role="tabpanel">
+            {% if children %}
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                    <th>Nama Anak</th>
+                    <th>Ayah</th>
+                    <th>Ibu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in children %}
+                    <tr>
+                    <td>{{ c.person.name }}</td>
+                    <td>{{ c.marriage.husband.name }}</td>
+                    <td>{{ c.marriage.wife.name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">Belum ada data anak.</div>
+            {% endif %}
+
+            <a href="{% url 'tambah_anak' %}" class="btn btn-sm btn-outline-success mb-3">
+                <i class="fas fa-baby"></i> Tambah Anak
+            </a>
+
+        </div>
+    </div>
+</div>
+
+    
+<script>
+  // Saat halaman dibuka dengan anchor tab (misal: #marriage), tab tersebut otomatis dibuka
+  document.addEventListener("DOMContentLoaded", function () {
+    const hash = window.location.hash;
+    if (hash) {
+      const triggerTab = document.querySelector(`button[data-bs-target="${hash}"]`);
+      if (triggerTab) {
+        new bootstrap.Tab(triggerTab).show();
+      }
+    }
+  });
+</script>
+
+
+{% endblock %}

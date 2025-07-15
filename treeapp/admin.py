@@ -1,9 +1,14 @@
 from django.contrib import admin
-from .models import Person, Marriage, Child, VisitorLog, AppConfig, ImageCarousel, AboutArticle
+from .models import Person, Marriage, Child, VisitorLog, AppConfig, ImageCarousel, AboutArticle, Family, CustomUser
+from django.contrib.auth.admin import UserAdmin
 
 from django.utils.timezone import localtime
 from django import forms
 from ckeditor.widgets import CKEditorWidget
+
+class FamilyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'created_at', 'updated_at')
+    search_fields = ('name', 'slug')    
 
 class AboutArticleAdminForm(forms.ModelForm):
     content = forms.CharField(widget=CKEditorWidget())
@@ -42,11 +47,6 @@ class VisitorLogAdmin(admin.ModelAdmin):
     search_fields = ('ip_address', 'path', 'user_agent')
     list_filter = ('timestamp',)
 
-admin.site.register(Person, PersonAdmin)
-admin.site.register(Marriage, MarriageInline)
-admin.site.register(Child, ChildInline)
-admin.site.register(AppConfig, AppConfigAdmin)
-admin.site.register(ImageCarousel, ImageCarouselAdmin)
 
 @admin.register(AboutArticle)
 class AboutArticleAdmin(admin.ModelAdmin):
@@ -55,3 +55,20 @@ class AboutArticleAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     ordering = ('-created_at',)
 
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    # Tambahkan field tambahan ke dalam UserAdmin
+    fieldsets = UserAdmin.fieldsets + (
+        ('Custom Fields', {'fields': ('family', 'role')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Custom Fields', {'fields': ('family', 'role')}),
+    )
+
+
+admin.site.register(Family, FamilyAdmin)
+admin.site.register(Person, PersonAdmin)
+admin.site.register(Marriage, MarriageInline)
+admin.site.register(Child, ChildInline)
+admin.site.register(AppConfig, AppConfigAdmin)
+admin.site.register(ImageCarousel, ImageCarouselAdmin)

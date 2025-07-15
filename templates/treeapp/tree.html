@@ -4,15 +4,15 @@
 {% block content %}
 
 <div class="mb-3">
-		<form method="get" action="{% url 'tree' 9 %}" onsubmit="this.action=this.action.replace('9', document.getElementById('husband_id').value)" class="border p-4 rounded bg-light">
+		<form method="get" action="{% url 'tree' 9 %}" onsubmit="this.action=this.action.replace('9', document.getElementById('husband_uuid').value)" class="border p-4 rounded bg-light">
 			<div class="row align-items-end">
 				<div class="col-md-8">
-					<label for="husband_id" class="h4">Choose a Man As Root</label>
-					<select id="husband_id" name="husband_id" class="form-select">
+					<label for="husband_uuid" class="h4">Choose a Man As Root</label>
+					<select id="husband_uuid" name="husband_uuid" class="form-select">
 						{% for p in persons %}
 							{% if p.gender == 'M' %}
 								<!-- <option value="{{ p.id }}">{{ p.name }}</option> -->
-								<option value="{{ p.id }}" {% if p.id == husband_id %}selected{% endif %}>{{ p.name }}</option>
+								<option value="{{ p.uuid }}" {% if p.uuid == husband_uuid %}selected{% endif %}>{{ p.name }}</option>
 								
 							{% endif %}
 						{% endfor %}

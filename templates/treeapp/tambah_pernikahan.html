@@ -1,0 +1,32 @@
+{% extends 'base_navigasi.html' %}
+{% block content %}
+<div class="container mt-3">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+          <h5><i class="fas fa-ring"></i> Tambah Data Pernikahan</h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="id_husband" class="form-label">Suami</label>
+              {{ form.husband }}
+            </div>
+            <div class="mb-3">
+              <label for="id_wife" class="form-label">Istri</label>
+              {{ form.wife }}
+            </div>
+            <div class="mb-3">
+              <label for="id_date_of_marriage" class="form-label">Tanggal Pernikahan</label>
+              {{ form.date_of_marriage }}
+            </div>
+            <button type="submit" class="btn btn-warning w-100"><i class="fas fa-check-circle"></i> Simpan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
