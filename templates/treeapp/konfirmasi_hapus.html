@@ -1,0 +1,15 @@
+{% extends 'base_navigasi.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="alert alert-danger">
+    <h4>{{caption}}</h4>
+    <p>{{pesan}}</p>
+    <form method="post">
+      {% csrf_token %}
+      <a href="{% url 'dashboard' %}" class="btn btn-secondary">Batal</a>
+      <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

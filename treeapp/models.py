@@ -35,7 +35,7 @@ class AboutArticle(BaseModel):
     title = models.CharField(max_length=255)
     content = RichTextField()
     image = models.ImageField(upload_to='family_articles/', blank=True, null=True)
-    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='about_articles', default=None, null=True, blank=True)
+    family = models.ForeignKey(Family, on_delete=models.RESTRICT, related_name='about_articles', default=None, null=True, blank=True)
     
     def __str__(self):
         return self.title
@@ -49,7 +49,7 @@ class ImageCarousel(BaseModel):
     image = models.ImageField(upload_to='carousel_images/')
     caption = models.CharField(max_length=255, blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
-    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='carousels', default=None, null=True, blank=True  )
+    family = models.ForeignKey(Family, on_delete=models.RESTRICT, related_name='carousels', default=None, null=True, blank=True  )
     
 
     def __str__(self):
@@ -63,7 +63,7 @@ class ImageCarousel(BaseModel):
 class AppConfig(BaseModel):
     name = models.CharField(max_length=100)
     value = models.TextField(blank=True, null=True)
-    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='app_configs', default=None, null=True, blank=True)
+    family = models.ForeignKey(Family, on_delete=models.RESTRICT, related_name='app_configs', default=None, null=True, blank=True)
     
 
     def __str__(self):
@@ -92,16 +92,16 @@ class Person(BaseModel):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     birth_date = models.DateField(null=True, blank=True)
     is_root = models.BooleanField(default=False)
-    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='members', default=None, null=True, blank=True  )
+    family = models.ForeignKey(Family, on_delete=models.RESTRICT, related_name='members', default=None, null=True, blank=True  )
     
     def __str__(self):
         return self.name
 
 class Marriage(BaseModel):
-    husband = models.ForeignKey(Person, related_name='marriages_as_husband', on_delete=models.CASCADE)
-    wife = models.ForeignKey(Person, related_name='marriages_as_wife', on_delete=models.CASCADE)
+    husband = models.ForeignKey(Person, related_name='marriages_as_husband', on_delete=models.RESTRICT)
+    wife = models.ForeignKey(Person, related_name='marriages_as_wife', on_delete=models.RESTRICT)
     date_of_marriage = models.DateField(null=True, blank=True)
-    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='marriages', default=None, null=True, blank=True  )
+    family = models.ForeignKey(Family, on_delete=models.RESTRICT, related_name='marriages', default=None, null=True, blank=True  )
     
     class Meta:
         constraints = [
@@ -112,9 +112,9 @@ class Marriage(BaseModel):
         return f"{self.husband.name} + {self.wife.name}"
 
 class Child(BaseModel):
-    person = models.OneToOneField(Person, on_delete=models.CASCADE)
-    marriage = models.ForeignKey(Marriage, on_delete=models.CASCADE, related_name='children')
-    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='children_family', default=None, null=True, blank=True  )
+    person = models.OneToOneField(Person, on_delete=models.RESTRICT)
+    marriage = models.ForeignKey(Marriage, on_delete=models.RESTRICT, related_name='children')
+    family = models.ForeignKey(Family, on_delete=models.RESTRICT, related_name='children_family', default=None, null=True, blank=True  )
     
     def __str__(self):
         return self.person.name

@@ -22,7 +22,13 @@
               <label for="id_date_of_marriage" class="form-label">Tanggal Pernikahan</label>
               {{ form.date_of_marriage }}
             </div>
-            <button type="submit" class="btn btn-warning w-100"><i class="fas fa-check-circle"></i> Simpan</button>
+            <button type="submit" class="btn btn-primary">
+              {% if edit_mode %}
+                <i class="fas fa-save"></i> Simpan Perubahan
+              {% else %}
+                <i class="fas fa-ring"></i> Tambah Pernikahan
+              {% endif %}
+            </button>
           </form>
         </div>
       </div>

@@ -20,6 +20,15 @@
 
     <!-- Starter Section Section -->
     <div id="starter-section" class="px-3 py-4 light-background">
+      {% if messages %}
+        <div class="container mt-3">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
       {% block content %}{% endblock %}
 

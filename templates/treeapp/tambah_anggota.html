@@ -1,7 +1,7 @@
 {% extends 'base_navigasi.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-3">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow">
@@ -11,6 +11,11 @@
         <div class="card-body">
           <form method="POST" class="needs-validation" novalidate>
             {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">URL Asal</label>
+              <input  type="text" name="url_asal" id="id_url_asal" value="{{url_asal}}"/>
+            </div>
+
             {{ form.non_field_errors }}
             <div class="mb-3">
               <label class="form-label">Nama</label>
@@ -31,7 +36,13 @@
                 </label>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-save"></i> Simpan</button>
+            <button type="submit" class="btn btn-primary">
+              {% if edit_mode %}
+                <i class="fas fa-save"></i> Simpan Perubahan
+              {% else %}
+                <i class="fas fa-user-plus"></i> Tambah Anggota
+              {% endif %}
+          </button>
           </form>
         </div>
       </div>

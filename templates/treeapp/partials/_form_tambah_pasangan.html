@@ -1,0 +1,27 @@
+<form method="POST" id="formTambahPasangan" action="{% url 'tambah_pasangan' %}">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_person" class="form-label">Pilih Anggota</label>
+    {{ form.person }}
+  </div>
+  <div class="mb-3">
+    <label for="id_spouse_name" class="form-label">Nama Pasangan</label>
+    {{ form.spouse_name }}
+  </div>
+  <div class="mb-3">
+    <label for="id_spouse_gender" class="form-label">Jenis Kelamin Pasangan</label>
+    {{ form.spouse_gender }}
+  </div>
+  <div class="mb-3">
+    <label for="id_date_of_marriage" class="form-label">Tanggal Pernikahan</label>
+    {{ form.date_of_marriage }}
+  </div>
+  <div class="mb-3">
+    <label for="id_menu_asal" class="form-label">Menu Asal</label>
+    {{ form.menu_asal }}
+  </div>
+  <input type="hidden" name="target_person_uuid" id="targetPersonUuid">
+  <button type="submit" class="btn btn-warning w-100">
+    <i class="fas fa-ring"></i> Simpan Pasangan
+  </button>
+</form>

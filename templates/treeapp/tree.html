@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block content %}
-
-<div class="mb-3">
+<div class="container mt-3">
+	<div class="mb-3">
 		<form method="get" action="{% url 'tree' 9 %}" onsubmit="this.action=this.action.replace('9', document.getElementById('husband_uuid').value)" class="border p-4 rounded bg-light">
 			<div class="row align-items-end">
 				<div class="col-md-8">
@@ -24,6 +24,11 @@
 			</div>
 		</form>
 	</div>
+	<div class="tree-container">
+        <div id="treeContainer"></div>
+    </div>
+
+</div>
 
   <style type="text/css">
 	body {
@@ -36,6 +41,9 @@
 	.marriage {
 	    fill: none;
 	    stroke: black;
+		/* stroke-width: 60px; */
+		
+
 	}
 	.marriageNode {
 			background-color: black;
@@ -44,14 +52,22 @@
 	.man {
 	    background-color: lightblue;
 			border-style: solid;
-			border-width: 1px;
+			border-width: 0.5px;
 			box-sizing: border-box;
+			border-radius: 10%;
+			height: 30px;
+			width: 30px;
+			padding: 3px;
 	}
 	.woman {
 			background-color: pink;
 			border-style: solid;
 			border-width: 1px;
 			box-sizing: border-box;
+			border-radius: 10%;
+			height: 30px;
+			width: 30px;
+			padding: 3px;
 	}
 	.emphasis{
 			font-style: italic;
@@ -83,15 +99,82 @@
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/d3-dtree@2.4.1/dist/dTree.css" /> -->
 
 
-  <style>
-    .man { fill: #b3cde0; }
-    .woman { fill: #fbb4ae; }
-  </style>
-	
+  	
 
-    <div class="tree-container">
-        <div id="treeContainer"></div>
-    </div>
+    
+	<div id="nodeContextMenuInti" class="dropdown-menu" style="position:absolute; display:none;">
+		<a class="dropdown-item" href="#" id="menuAddSpouse">💍 Tambah Pasangan</a>
+		<!-- <a class="dropdown-item" href="#" id="menuEditPerson">✏️ Edit Anggota</a> -->
+	</div>
+
+	<div id="nodeContextMenuNonInti" class="dropdown-menu" style="position:absolute; display:none;">
+		<a class="dropdown-item" href="#" id="menuAddChild">➕ Tambah Anak</a>		
+		<!-- <a class="dropdown-item" href="#" id="menuEditPerson">✏️ Edit Anggota</a> -->
+	</div>
+
+	<style>
+		#nodeContextMenuInti {
+			z-index: 9999;
+		}
+
+		#nodeContextMenuNonInti {
+			z-index: 9999;
+		}
+	</style>
+
+	<!-- Modal Tambah Anak -->
+	<div class="modal fade" id="modalAddChild" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Tambah Anak</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				{% include "treeapp/partials/_form_tambah_anak_tree.html" %}
+				
+			</div>
+		</div>
+	</div>
+	</div>
+
+	<!-- Modal Tambah Pasangan -->
+	<div class="modal fade" id="modalAddSpouse" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title">Tambah Pasangan</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+		</div>
+		<div class="modal-body">
+			{% include "treeapp/partials/_form_tambah_pasangan.html" %}
+			
+		</div>
+		</div>
+	</div>
+	</div>
+
+	<!-- Modal Edit Anggota -->
+	<div class="modal fade" id="modalEditPerson" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title">Edit Anggota</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+		</div>
+		<div class="modal-body">
+			<form method="post" action="">
+			{% csrf_token %}
+			<input type="hidden" name="person_id" id="editPersonId">
+			<!-- Form fields -->
+			<button type="submit" class="btn btn-primary mt-3">Simpan Perubahan</button>
+			</form>
+		</div>
+		</div>
+	</div>
+	</div>
+
+
 
     <script>
         // Data pohon keluarga dari Django
@@ -105,10 +188,107 @@
             callbacks: {
                 nodeClick: function(name, extra) {
 					if (extra && extra.href) {
-						window.open(extra.href, '_blank');
+						//window.open(extra.href, '_blank');
+						window.location.href = extra.href;
+						// alert("Person ID: " + extra.person_id + "\nUUID: " + extra.uuid);
+						// console.log("Klik kiri node:", name);
 					}
 				}
-            }
+            },
         });
+
+		function createEditPersonItem(url) {
+			const item = document.createElement("a");
+			item.className = "dropdown-item";
+			const url_sekarang = window.location.href;
+			const match = url_sekarang.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
+			let new_url = url;
+			if (match) {
+				const uuid = match[0];
+				new_url = url.replace('abcdefg', uuid);
+			}
+
+			item.href = new_url;
+			item.textContent = "✏️ Edit Anggota";
+			item.setAttribute("data-action", "edit-person");
+			return item;
+		}
+
+		function updateMenu(menuElement, url) {
+			// Hapus dulu jika sudah ada item "Edit Anggota"
+			const existingItem = menuElement.querySelector('[data-action="edit-person"]');
+			if (existingItem) {
+			menuElement.removeChild(existingItem);
+			}
+
+			// Tambahkan ulang
+			menuElement.appendChild(createEditPersonItem(url));
+		}
+		// Simpan ID node yang diklik
+		let selectedNodeId = null;
+
+		// Fungsi untuk menampilkan menu konteks
+		function showContextMenu(event, extra) {
+			event.preventDefault();
+			
+			console.log("extra.is_inti:", extra.is_inti);
+			
+			let menu = null;
+
+			if (extra.is_inti == 1){
+				console.log("Menampilkan menu konteks untuk inti");
+				selectedNodeId = extra.person_id;
+				menu = document.getElementById("nodeContextMenuInti");		
+				updateMenu(menu, extra.href_edit);
+  			} else {
+				console.log("Menampilkan menu konteks untuk non inti");
+				selectedNodeId = extra.marriage_id;
+				menu = document.getElementById("nodeContextMenuNonInti");			
+				updateMenu(menu, extra.href_edit);
+			}
+
+			menu.style.display = "block";
+			menu.style.left = `${event.pageX}px`;
+			menu.style.top = `${event.pageY}px`;
+		}
+
+		// Tutup menu ketika klik di luar
+		document.addEventListener("click", function() {
+			document.getElementById("nodeContextMenuInti").style.display = "none";
+		});
+
+		document.addEventListener("click", function() {
+			document.getElementById("nodeContextMenuNonInti").style.display = "none";
+		});
+
+		// Binding ke dTree
+		console.log("Binding context menu to nodes...");
+		setTimeout(() => {
+			console.log("Masuk ke binding context menu");
+			d3.selectAll(".man, .woman")
+				.on("contextmenu", function(d) {
+					const event = d3.event;  // ambil event dari D3
+					event.preventDefault();  // cegah menu bawaan
+					const nodeData = d3.select(this.parentNode).node().__data__.data;
+					console.log("Node data:", nodeData.extra);
+					showContextMenu(event, nodeData.extra);
+				});
+		}, 500);
+
+		// Event pada menu
+		document.getElementById("menuAddChild").addEventListener("click", function() {
+			document.getElementById("id_marriage").value = selectedNodeId;
+			new bootstrap.Modal(document.getElementById('modalAddChild')).show();
+		});
+		document.getElementById("menuAddSpouse").addEventListener("click", function() {
+			document.getElementById("id_person").value = selectedNodeId;
+			// document.getElementById("id_menu_asal").value = "tree/" + selectedNodeId;
+			new bootstrap.Modal(document.getElementById('modalAddSpouse')).show();
+		});
+		document.getElementById("menuEditPerson").addEventListener("click", function() {
+			document.getElementById("editPersonId").value = selectedNodeId;
+			new bootstrap.Modal(document.getElementById('modalEditPerson')).show();
+		});
+
     </script>
 {% endblock%}

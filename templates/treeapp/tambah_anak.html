@@ -1,23 +1,12 @@
 {% extends 'base_navigasi.html' %}
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-3">
   <div class="card shadow">
     <div class="card-header bg-success text-white">
       <h5><i class="fas fa-baby"></i> Tambah Anak ke Pernikahan</h5>
     </div>
     <div class="card-body">
-      <form method="POST">
-        {% csrf_token %}
-        <div class="mb-3">
-          <label for="id_marriage" class="form-label">Pilih Pernikahan</label>
-          {{ form.marriage }}
-        </div>
-        <div class="mb-3">
-          <label for="id_children" class="form-label">Pilih Anak-anak</label>
-          {{ form.children }}
-        </div>
-        <button type="submit" class="btn btn-success w-100"><i class="fas fa-check"></i> Simpan</button>
-      </form>
+      {% include "treeapp/partials/_form_tambah_anak.html" %}
     </div>
   </div>
 </div>

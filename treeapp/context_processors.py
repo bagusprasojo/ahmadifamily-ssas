@@ -3,12 +3,17 @@ from .models import Person, Marriage
 def root_person(request):
 
     pasangan_root = None
+    root = None;
 
-    root = Person.objects.filter(is_root=True).first()
-    if root : 
-        if Person.objects.all().count() > 1:
-            if Marriage.objects.filter(husband=root).exists():
-                pasangan_root = Marriage.objects.filter(husband=root).first().wife  
+    # print(request)
+    # print(request.user)
+
+    if request.user.is_authenticated:        
+        root = Person.objects.filter(is_root=True, family = request.user.family).first()
+        if root : 
+            if Person.objects.all().count() > 1:
+                if Marriage.objects.filter(husband=root).exists():
+                    pasangan_root = Marriage.objects.filter(husband=root).first().wife  
             
         
 

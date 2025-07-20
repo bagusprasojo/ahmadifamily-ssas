@@ -3,6 +3,59 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser, Family, Person, Marriage, Child
 from django.contrib.auth.forms import AuthenticationForm
 
+class AddSpouseForm(forms.Form):
+    person = forms.ModelChoiceField(
+        queryset=Person.objects.none(),  # akan diisi di __init__
+        label="Pilih Anggota",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+    spouse_name = forms.CharField(
+        label="Nama Pasangan",
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    spouse_gender = forms.ChoiceField(
+        choices=Person.GENDER_CHOICES,
+        label="Jenis Kelamin Pasangan",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+    date_of_marriage = forms.DateField(
+        required=False,
+        label="Tanggal Pernikahan",
+        widget=forms.DateInput(attrs={"type": "date", "class": "form-control"})
+    )
+
+    def __init__(self, *args, **kwargs):
+        family = kwargs.pop("family", None)
+        super().__init__(*args, **kwargs)
+        if family:
+            self.fields['person'].queryset = Person.objects.filter(family=family)
+
+class AddChildrenFormTree(forms.Form):
+    marriage = forms.ModelChoiceField(
+        queryset=Marriage.objects.none(),
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label="Pilih Pernikahan"
+    )
+    
+    child_name = forms.CharField(
+        label="Nama Anak",
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    child_gender = forms.ChoiceField(
+        choices=Person.GENDER_CHOICES,
+        label="Jenis Kelamin Anak",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+
+    def __init__(self, *args, **kwargs):
+        family = kwargs.pop('family', None)
+        super().__init__(*args, **kwargs)
+        if family:
+            self.fields['marriage'].queryset = family.marriages.all()
+            
+
+
 class AddChildrenForm(forms.Form):
     marriage = forms.ModelChoiceField(
         queryset=Marriage.objects.none(),

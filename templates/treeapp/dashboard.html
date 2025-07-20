@@ -1,13 +1,25 @@
 {% extends 'base_navigasi.html' %}
 {% load static %}
 
-<style>
-    .nav-tabs .nav-link.active {
-    background-color: #f8f9fa;
-    border-color: #dee2e6 #dee2e6 #fff;
-    font-weight: bold;
-}  
-</style>
+{% block head_content %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<!-- jQuery (wajib untuk DataTables) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- Buttons for DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+
+{% endblock %}
 
 {% block content %}
 <div class="container mt-3">
@@ -24,16 +36,20 @@
     </ul>
 
     <div class="tab-content mt-4" id="familyTabContent">
-        <div class="tab-pane fade show active" id="person" role="tabpanel">
+        <div class="tab-pane fade show active" id="person" role="tabpanel">            
+            <a href="{% url 'tambah_anggota' 'dashboard' %}" class="btn btn-sm btn-outline-primary mb-3">
+                <i class="fas fa-user-plus"></i> Tambah Anggota
+            </a>
             {% if members %}
             <div class="table-responsive mb-4">
-                <table class="table table-bordered table-striped align-middle">
+                <table class="table table-bordered table-striped align-middle" id="anggota-table">
                 <thead class="table-light">
                     <tr>
                     <th>Nama</th>
                     <th>Jenis Kelamin</th>
                     <th>Tanggal Lahir</th>
                     <th>Akar Pohon?</th>
+                    <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,6 +65,15 @@
                         <span class="badge bg-secondary">Tidak</span>
                         {% endif %}
                     </td>
+                    <td>
+                        <a href="{% url 'edit_anggota' 'dashboard' person.uuid %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'hapus_anggota' person.uuid %}" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -58,20 +83,22 @@
             <div class="alert alert-warning">Belum ada anggota keluarga.</div>
             {% endif %}
 
-            <a href="{% url 'tambah_anggota' %}" class="btn btn-sm btn-outline-primary mb-3">
-                <i class="fas fa-user-plus"></i> Tambah Anggota
-            </a>
+            
         </div>
         
         <div class="tab-pane fade" id="marriage" role="tabpanel">
+            <a href="{% url 'tambah_pernikahan' %}" class="btn btn-sm btn-outline-warning mb-3">
+                <i class="fas fa-ring"></i> Tambah Pernikahan
+            </a>
             {% if marriages %}
             <div class="table-responsive mb-4">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" id="pernikahan-table">
                 <thead class="table-light">
                     <tr>
                     <th>Suami</th>
                     <th>Istri</th>
                     <th>Tanggal Pernikahan</th>
+                    <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,6 +107,15 @@
                     <td>{{ m.husband.name }}</td>
                     <td>{{ m.wife.name }}</td>
                     <td>{{ m.date_of_marriage|date:"d M Y" }}</td>
+                    <td>
+                        <a href="{% url 'edit_pernikahan' m.uuid %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'hapus_pernikahan' m.uuid %}" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -89,20 +125,22 @@
             <div class="alert alert-warning">Belum ada data pernikahan.</div>
             {% endif %}
 
-            <a href="{% url 'tambah_pernikahan' %}" class="btn btn-sm btn-outline-warning mb-3">
-                <i class="fas fa-ring"></i> Tambah Pernikahan
-            </a>
+            
         </div>
 
-        <div class="tab-pane fade" id="child" role="tabpanel">
+        <div class="tab-pane fade" id="child" role="tabpanel">    
+            <a href="{% url 'tambah_anak' %}" class="btn btn-sm btn-outline-success mb-3">
+                <i class="fas fa-baby"></i> Tambah Anak
+            </a>        
             {% if children %}
             <div class="table-responsive mb-4">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" id="anak-table">
                 <thead class="table-light">
                     <tr>
                     <th>Nama Anak</th>
                     <th>Ayah</th>
                     <th>Ibu</th>
+                    <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,6 +149,11 @@
                     <td>{{ c.person.name }}</td>
                     <td>{{ c.marriage.husband.name }}</td>
                     <td>{{ c.marriage.wife.name }}</td>
+                    <td>
+                        <a href="{% url 'hapus_anak' c.uuid %}" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -120,9 +163,7 @@
             <div class="alert alert-warning">Belum ada data anak.</div>
             {% endif %}
 
-            <a href="{% url 'tambah_anak' %}" class="btn btn-sm btn-outline-success mb-3">
-                <i class="fas fa-baby"></i> Tambah Anak
-            </a>
+            
 
         </div>
     </div>
@@ -141,6 +182,25 @@
     }
   });
 </script>
+
+<script>
+  $(document).ready(function () {
+    $('#anggota-table').DataTable({
+        dom: 'lBfrtip',  // <== tambahkan 'l'
+        buttons: ['copy', 'csv', 'excel', 'print'],
+    });
+
+    $('#pernikahan-table').DataTable({
+        dom: 'lBfrtip',  // <== tambahkan 'l'
+        buttons: ['copy', 'csv', 'excel', 'print'],
+    });
+    $('#anak-table').DataTable({
+        dom: 'lBfrtip',  // <== tambahkan 'l'
+        buttons: ['copy', 'csv', 'excel', 'print'],
+    });
+  });
+</script>
+
 
 
 {% endblock %}

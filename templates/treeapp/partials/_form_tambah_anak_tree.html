@@ -1,0 +1,18 @@
+<form method="POST" id="formTambahAnak" action="{% url 'tambah_anak_tree' %}">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_marriage" class="form-label">Pilih Pernikahan</label>
+    {{ form_anak_tree.marriage }}
+  </div>
+  <div class="mb-3">
+    <label for="id_child_name" class="form-label">Nama Anak</label>
+    {{ form_anak_tree.child_name }}
+  </div>
+  <div class="mb-3">
+    <label for="id_child_gender" class="form-label">Jenis Anak</label>
+    {{ form_anak_tree.child_gender }}
+  </div>
+  <button type="submit" class="btn btn-success w-100">
+    <i class="fas fa-check"></i> Simpan Aja
+  </button>
+</form>

@@ -39,6 +39,8 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+
+  {% block head_content %}{% endblock %}
 </head>
 
 <body class="starter-page-page">
@@ -71,7 +73,7 @@
               {% if root_person %}
                   <li><a href="{% url 'tree' root_person.uuid %}">Family Tree</a></li>
               {% else %}
-                  <li><a href="{% url 'tree' abc %}">Family Tree</a></li>
+                  <li><a href="{% url 'tree' %}">Family Tree</a></li>
               {% endif %}
 
               <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
@@ -131,6 +133,7 @@
   <!-- Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
 
+  {% block extra_script %}{% endblock %}
 </body>
 
 </html>

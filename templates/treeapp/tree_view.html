@@ -1,0 +1,79 @@
+{% extends 'base_navigasi.html' %}
+{% load static %}
+{% block head_content %}
+  <link rel="stylesheet" href="{% static 'treeapp/treant/Treant.css' %}">
+  <script src="{% static 'treeapp/treant/raphael.js' %}"></script>
+  <script src="{% static 'treeapp/treant/Treant.js' %}"></script>
+
+  <style>
+    .nodeExample1 {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        position: relative;
+        max-width: 150px;
+        text-align: center;
+        word-wrap: break-word;
+    }
+
+    .nodeExample1 .node-name {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .nodeExample1 .collapse-switch {
+        width: 12px;
+        height: 12px;
+        background-color: #aaa;
+        /* border-radius: 50%; */
+        display: inline-block;
+        text-align: center;
+        line-height: 12px;
+        font-size: 10px;
+        color: white;
+        cursor: pointer;
+        margin-left: 5px;
+    }
+    .nodeExample1 .collapse-switch:hover {
+        background-color: #e90909;
+    }
+    
+    .nodeExample1 .collapse-switch.collapsed {
+        background-color: #f00;
+    }
+    
+    .nodeExample1 .collapse-switch.expanded {
+        background-color: #0f0;
+    }
+
+    #tree-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    #tree-simple {
+      min-width: 800px; /* Sesuaikan dengan lebar pohon */
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+  <div id="tree-wrapper">
+    <div id="tree-simple"></div>
+  </div>
+
+  
+{% endblock %}
+
+{% block extra_script %}
+  <script>
+fetch('/pohon/json/')
+  .then(response => response.json())
+  .then(data => {
+    new Treant(data);
+  });
+</script>
+{% endblock %}

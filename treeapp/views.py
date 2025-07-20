@@ -2,10 +2,236 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Person, Marriage, Child
 from datetime import date
 from django.urls import reverse
-from .forms import RegistrationForm, PersonForm, MarriageForm, ChildForm, AddChildrenForm
+from .forms import RegistrationForm, PersonForm, MarriageForm, ChildForm, AddChildrenForm, AddSpouseForm, AddChildrenFormTree
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import RestrictedError
+from django.db import models
+from django.http import JsonResponse
+
+@login_required
+def tambah_pasangan_view(request):
+    family = request.user.family
+    print(f"Family: {family}")
+    if not family:
+        return redirect('dashboard')
+
+    if request.method == 'POST':      
+        print("POST request received")  
+        form = AddSpouseForm(request.POST, family=family)
+        # print(form.cleaned_data)
+        print(form.errors)
+        if form.is_valid():
+            # Ambil data form
+            print(form.cleaned_data)
+            target_person = form.cleaned_data['person']
+            spouse_name = form.cleaned_data['spouse_name']
+            spouse_gender = form.cleaned_data['spouse_gender']
+            date_of_marriage = form.cleaned_data['date_of_marriage']
+            
+                
+
+            # Buat pasangan baru
+            spouse = Person.objects.create(
+                name=spouse_name,
+                gender=spouse_gender,
+                family=family
+            )
+
+            # Tentukan mana husband dan wife
+            if target_person.gender == 'M':
+                husband, wife = target_person, spouse
+            else:
+                husband, wife = spouse, target_person
+
+            # Buat record pernikahan
+            Marriage.objects.create(
+                husband=husband,
+                wife=wife,
+                date_of_marriage=date_of_marriage,
+                family=family
+            )
+
+            # messages.success(request, f"Pasangan '{spouse_name}' berhasil ditambahkan.")
+            return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        form = AddSpouseForm(family=family)
+
+    return render(request, 'treeapp/tambah_pasangan.html', {'form': form})
+
+@login_required
+def tambah_anak_tree(request):
+    family = request.user.family
+    print(f"Family: {family}")
+    if not family:
+        return redirect('dashboard')
+
+    if request.method == 'POST':      
+        print("POST request received")  
+        form = AddChildrenFormTree(request.POST, family=family)
+        # print(form.cleaned_data)
+        print(form.errors)
+        if form.is_valid():
+            # Ambil data form
+            print(form.cleaned_data)
+            marriage = form.cleaned_data['marriage']
+            child_name = form.cleaned_data['child_name']
+            child_gender = form.cleaned_data['child_gender']
+            
+            # Buat pasangan baru
+            child = Person.objects.create(
+                name=child_name,
+                gender=child_gender,
+                family=family
+            )
+
+            Child.objects.create(
+                    person=child,
+                    marriage=marriage,
+                    family=family
+                )
+
+            # messages.success(request, f"Pasangan '{spouse_name}' berhasil ditambahkan.")
+            return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        form = AddSpouseForm(family=family)
+
+    return render(request, 'treeapp/tambah_pasangan.html', {'form': form})
+
+
+def build_tree_node(person, family):
+    node = {
+        "text": {
+            "name": person.name
+        },
+        "collapsed": True,  # Node akan collapsed secara default
+        "HTMLclass": "clickable-node",
+        "extra": {
+            "person_id": person.id,
+            "href": reverse('person_detail', args=[person.uuid]),
+            "label": person.name,
+        }
+    }
+
+    # Cari pasangan orang ini (jika ada)
+    marriages = Marriage.objects.filter(family=family).filter(
+        models.Q(husband=person) | models.Q(wife=person)
+    )
+
+    children_nodes = []
+
+    for marriage in marriages:
+        # Ambil semua anak dari pernikahan ini
+        anak_list = Child.objects.filter(marriage=marriage).select_related('person')
+
+        for anak in anak_list:
+            # Rekursif ke anaknya
+            child_node = build_tree_node(anak.person, family)
+            children_nodes.append(child_node)
+
+        # Tambahkan pasangan jika ingin ditampilkan di satu node (opsional)
+        pasangan = marriage.wife if marriage.husband == person else marriage.husband
+        node["text"]["name"] += f" + {pasangan.name}"
+
+    if children_nodes:
+        node["children"] = children_nodes
+
+    return node
+
+@login_required
+def tree_view(request):
+    return render(request, 'treeapp/tree_view.html')
+
+@login_required
+def tree_json_view(request):
+    family = request.user.family
+    # Tentukan siapa rootnya (misalnya orang pertama yang terdaftar di family ini)
+    root_person = Person.objects.filter(family=family).first()
+
+    if not root_person:
+        return JsonResponse({"error": "Tidak ada anggota keluarga."})
+
+    tree_structure = {
+        "chart": {
+            "container": "#tree-simple",
+            "collapsable": False,  # Aktifkan collapse/expand
+            "connectors": {
+                "type": "bCurve",
+                "style": {
+                    "stroke": "#0d1fe6",
+                    "stroke-width": 2
+                }
+            },
+            "node": {
+                "HTMLclass": "nodeExample1"
+            },
+            "animation": {
+                "nodeAnimation": "easeOutBounce",
+                "nodeSpeed": 700,
+                "connectorsAnimation": "bounce",
+                "connectorsSpeed": 700
+            }
+        },
+        "nodeStructure": build_tree_node(root_person, family)
+    }
+
+    return JsonResponse(tree_structure)
+
+@login_required
+def hapus_anak_view(request, uuid):
+    family = request.user.family
+    child = get_object_or_404(Child, uuid=uuid, family=family)
+
+    if request.method == 'POST':
+        try:
+            child.delete()
+            messages.success(request, f'Anak "{child.person.name}" berhasil dihapus dari pernikahan.')
+        except RestrictedError:
+            messages.error(request, "Tidak dapat menghapus karena data ini masih terkait dengan entitas lain.")
+        return redirect('dashboard')
+
+    return render(request, 'treeapp/konfirmasi_hapus.html', {
+        'caption': 'Hapus Anak',
+        'pesan': f'Apakah Anda yakin ingin menghapus anak "{child.person.name}" dari pernikahan {child.marriage.husband.name} dan {child.marriage.wife.name}?', 
+    })
+
+
+@login_required
+def hapus_pernikahan_view(request, uuid):
+    family = request.user.family
+    marriage = get_object_or_404(Marriage, uuid=uuid, family=family)
+
+    if request.method == 'POST':
+        try:
+            marriage.delete()
+            messages.success(request, "Pernikahan berhasil dihapus.")
+        except RestrictedError:
+            messages.error(request, "Tidak dapat menghapus pernikahan karena terkait data lain.")
+        return redirect('dashboard')
+
+    return render(request, 'treeapp/konfirmasi_hapus.html', {
+        'caption': 'Hapus Pernikahan',
+        'pesan': f'Apakah Anda yakin ingin menghapus pernikahan antara {marriage.husband.name} dan {marriage.wife.name}?',
+    })
+
+@login_required
+def hapus_anggota_view(request, uuid):
+    person = get_object_or_404(Person, uuid=uuid, family=request.user.family)
+
+    if request.method == 'POST':
+        try:
+            person.delete()
+            messages.success(request, f'Anggota "{person.name}" berhasil dihapus.')
+            return redirect('dashboard')
+        except RestrictedError as e:
+            messages.error(request, f'Tidak bisa menghapus anggota "{person.name}". Karena ada data yang terkait')
+            return redirect('dashboard')
+
+    return render(request, 'treeapp/konfirmasi_hapus.html', {
+        'caption': 'Hapus Anggota',
+        'pesan': f'Apakah Anda yakin ingin menghapus anggota "{person.name}" dari keluarga Anda?',
+    })
 
 @login_required
 def tambah_anak_view(request):
@@ -33,40 +259,68 @@ def tambah_anak_view(request):
 
 
 @login_required
-def tambah_pernikahan_view(request):
+def tambah_or_edit_pernikahan_view(request, uuid=None):
     family = request.user.family
     if not family:
         return redirect('dashboard')
 
+    # Cek apakah sedang edit
+    if uuid:
+        marriage = get_object_or_404(Marriage, uuid=uuid, family=family)
+    else:
+        marriage = None
+
     if request.method == 'POST':
-        form = MarriageForm(request.POST, family=family)
+        form = MarriageForm(request.POST, family=family, instance=marriage)
         if form.is_valid():
-            marriage = form.save(commit=False)
-            marriage.family = family
-            marriage.save()
+            marriage_obj = form.save(commit=False)
+            marriage_obj.family = family
+            marriage_obj.save()
             return redirect('dashboard')
     else:
-        form = MarriageForm(family=family)
-    
-    return render(request, 'treeapp/tambah_pernikahan.html', {'form': form})
+        form = MarriageForm(family=family, instance=marriage)
+
+    return render(request, 'treeapp/tambah_pernikahan.html', {
+        'form': form,
+        'edit_mode': bool(marriage),
+        'marriage': marriage,
+    })
 
 
 @login_required
-def tambah_anggota_view(request):
+def tambah_or_edit_anggota_view(request, url_asal, uuid=None):
     if not request.user.family:
         return redirect('dashboard')
 
-    if request.method == 'POST':
-        form = PersonForm(request.POST)
-        if form.is_valid():
-            person = form.save(commit=False)
-            person.family = request.user.family
-            person.save()
-            return redirect('dashboard')
+    if uuid:
+        person = get_object_or_404(Person, uuid=uuid, family=request.user.family)
     else:
-        form = PersonForm()
-    
-    return render(request, 'treeapp/tambah_anggota.html', {'form': form})
+        person = None
+
+    if url_asal == False:
+        url_asal = 'dashboard'
+    elif url_asal != 'dashboard':
+        url_asal = reverse('tree', args=[url_asal])
+
+    if request.method == 'POST':
+        form = PersonForm(request.POST, instance=person)
+        if form.is_valid():
+            new_person = form.save(commit=False)
+            new_person.family = request.user.family
+            new_person.save()
+            messages.success(request, f'Anggota "{new_person.name}" berhasil {"ditambahkan" if not person else "diperbarui"}.')
+            
+            return redirect(url_asal)
+    else:
+        form = PersonForm(instance=person)
+
+    return render(request, 'treeapp/tambah_anggota.html', {
+        'form': form,
+        'edit_mode': bool(person),
+        'person': person,
+        'url_asal':url_asal
+    })
+
 
 @login_required
 def dashboard_view(request):
@@ -151,56 +405,81 @@ def build_person_node(person):
             marriage_data.append({
                 'spouse': {
                     'name': spouse.name,
-                    'class': 'man' if spouse.gender == 'M' else 'woman',
+                    'class': ('man' if spouse.gender == 'M' else 'woman') + ' pasangan',
                     "textClass": "node-text",
                     "HTMLclass": "clickable-node",
                     "extra": {
                         "person_id": spouse.id,
-                        "href": reverse('person_detail', args=[spouse.id])
+                        "is_inti": 0,
+                        "href": reverse('tree', args=[spouse.uuid]),
+                        "href_edit": reverse('edit_anggota', args=['abcdefg',spouse.uuid]),
+                        "marriage_id":marriage.id
                     }
                 },
                 'children': child_nodes
             })
 
+
         return {
             'name': person.name,            
-            'class': 'man' if person.gender == 'M' else 'woman',
+            'class': ('man' if person.gender == 'M' else 'woman') + ' inti',
             'marriages': marriage_data,
             "textClass": "node-text",
             "HTMLclass": "clickable-node",
             "extra": {
                 "person_id": person.id,
-                "href": reverse('person_detail', args=[person.id])
+                "pk_id": person.id,
+                "is_inti": 1,                
+                "href": reverse('tree', args=[person.uuid]),
+                "href_edit": reverse('edit_anggota', args=['abcdefg',person.uuid])
+                
             }
         }
 
 
 @login_required
-def family_tree(request, uuid):
+def family_tree(request, uuid=None):
     persons = Person.objects.all().filter(family = request.user.family).order_by('name')
-    try:
-        person = Person.objects.get(uuid=uuid)
-    except Person.DoesNotExist:
-        return render(request, 'treeapp/tree.html', {
-            'tree_data': [],
-            'error': 'Data tidak ditemukan',
+    form = AddSpouseForm(family=request.user.family)
+    form_anak_tree = AddChildrenFormTree(family=request.user.family)
+        
+    if uuid:
+        try:
+            person = Person.objects.get(uuid=uuid)
+        except Person.DoesNotExist:
+            return render(request, 'treeapp/tree.html', {
+                'tree_data': [],
+                'error': 'Data tidak ditemukan',
+                'current_page': 'Family Tree',
+                'persons': persons,
+            })
+
+        tree_data = [build_person_node(person)]
+
+        
+        # print(tree_data)
+
+        context = {
+            'tree_data': tree_data,
+            'current_page': 'Family Tree',
+            'husband_uuid': person.uuid,
+            'persons': persons,
+            'form': form,
+            'form_anak_tree':form_anak_tree
+        }
+        # return render(request, 'treeapp/tree.html', context)
+    else:
+        context = {
             'current_page': 'Family Tree',
             'persons': persons,
-        })
-
-    tree_data = [build_person_node(person)]
-    # print(tree_data)
-
-    context = {
-        'tree_data': tree_data,
-        'current_page': 'Family Tree',
-        'husband_uuid': person.uuid,
-        'persons': persons,
-    }
+            'form': form,
+            'form_anak_tree':form_anak_tree
+        }
+    
     return render(request, 'treeapp/tree.html', context)
 
-def person_detail(request, person_id):
-    person = get_object_or_404(Person, pk=person_id)
+def person_detail(request, uuid):
+    person = get_object_or_404(Person, uuid=uuid)
 
     # Hitung umur
     def hitung_umur(birth_date):

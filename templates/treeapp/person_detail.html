@@ -26,7 +26,7 @@
               <li class="list-group-item"><strong>Dibuat pada:</strong> {{ person.created_at|date:"d M Y" }}</li>
               <li class="list-group-item"><strong>Terakhir diupdate:</strong> {{ person.updated_at|date:"d M Y" }}</li>
             </ul>
-            <a href="{% url 'tree' person.id %}" class="btn btn-outline-primary mt-3">
+            <a href="{% url 'tree' person.uuid %}" class="btn btn-outline-primary mt-3">
               Lihat dalam Pohon Keluarga
             </a>
           </div>
@@ -40,7 +40,7 @@
       <div class="card-body">
         <h4 class="card-title">Pasangan</h4>
         {% if spouse %}
-          <a href="{% url 'person_detail' spouse.id %}">{{ spouse.name }}</a>
+          <a href="{% url 'person_detail' spouse.uuid %}">{{ spouse.name }}</a>
         {% else %}
           <p><em>Belum ada pasangan</em></p>
         {% endif %}
@@ -55,7 +55,7 @@
         {% if children %}
           <ul>
             {% for child in children %}
-              <li><a href="{% url 'person_detail' child.id %}">{{ child.name }}</a></li>
+              <li><a href="{% url 'person_detail' child.uuid %}">{{ child.name }}</a></li>
             {% endfor %}
           </ul>
         {% else %}
@@ -72,10 +72,10 @@
         {% if father or mother %}
           <ul>
             {% if father %}
-              <li>Ayah: <a href="{% url 'person_detail' father.id %}">{{ father.name }}</a></li>
+              <li>Ayah: <a href="{% url 'person_detail' father.uuid %}">{{ father.name }}</a></li>
             {% endif %}
             {% if mother %}
-              <li>Ibu: <a href="{% url 'person_detail' mother.id %}">{{ mother.name }}</a></li>
+              <li>Ibu: <a href="{% url 'person_detail' mother.uuid %}">{{ mother.name }}</a></li>
             {% endif %}
           </ul>
         {% else %}
@@ -92,7 +92,7 @@
         {% if siblings %}
           <ul>
             {% for sibling in siblings %}
-              <li><a href="{% url 'person_detail' sibling.id %}">{{ sibling.name }}</a></li>
+              <li><a href="{% url 'person_detail' sibling.uuid %}">{{ sibling.name }}</a></li>
             {% endfor %}
           </ul>
         {% else %}
