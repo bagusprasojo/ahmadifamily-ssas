@@ -22,7 +22,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
+    path('', lambda request: views.home_dashboard(request) if request.user.is_authenticated else views.home_public(request), name='home'),
+    path('home/', views.home_dashboard, name='home_dashboard'),
+    path('landing/', views.home_public, name='home_public'),
     path('', include('treeapp.urls')),
     path('events/', include('eventapp.urls')),
     path('gallery/', include('galleryapp.urls')),

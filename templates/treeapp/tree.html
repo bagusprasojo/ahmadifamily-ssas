@@ -188,10 +188,7 @@
             callbacks: {
                 nodeClick: function(name, extra) {
 					if (extra && extra.href) {
-						//window.open(extra.href, '_blank');
-						window.location.href = extra.href;
-						// alert("Person ID: " + extra.person_id + "\nUUID: " + extra.uuid);
-						// console.log("Klik kiri node:", name);
+						window.location.href = extra.href;						
 					}
 				}
             },

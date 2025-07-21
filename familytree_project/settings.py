@@ -17,7 +17,7 @@ AUTH_USER_MODEL = 'treeapp.CustomUser'
 
 LOGIN_URL = '/login/' 
 LOGIN_REDIRECT_URL = '/dashboard/'  # arahkan ke halaman keluarga
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/home/'  # arahkan ke halaman home setelah logout
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

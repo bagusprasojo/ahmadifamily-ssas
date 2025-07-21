@@ -4,248 +4,203 @@
 {% block content_nav %}
 <main class="main">
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero section dark-background">
-
-      <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
-
-        {% for img in image_carousel %}
-        <div class="carousel-item active">
-          <img src="{{ img.image.url }}" alt="">
-        </div><!-- End Carousel Item -->
-        {% endfor %}
-
-        <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
-        </a>
-
-        <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
-          <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
-        </a>
-
-        <ol class="carousel-indicators"></ol>
-
-      </div>
-
-      
-
-    </section><!-- /Hero Section -->
-
-    <!-- About Section -->
-    <section id="about" class="about section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>{{ about_article.title }}</h2>        
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row gy-4">
-          <div class="col-lg-6">
-            <img src="{{ about_article.image.url }}" class="img-fluid" alt="">
-          </div>
-          <div class="col-lg-6 content">
-            {{about_article.content|safe}}
-            
-            
-          </div>
+{% if user.is_authenticated %}
+    <!-- DASHBOARD KHUSUS KELUARGA -->
+    <section id="dashboard" class="section">
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Selamat Datang, {{ user.username }}</h2>
+            <p class="text-muted">
+                Anda sedang melihat data Keluarga <strong>{{ family.name }}</strong>
+            </p>
         </div>
 
-      </div>
+        <!-- Statistik Keluarga -->
+        <div class="container mt-4">
+            <div class="row text-center g-4">
+                <!-- Laki-laki -->
+                <div class="col-md-3">
+                    <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient"
+                         style="background: linear-gradient(135deg, #4e73df, #224abe); color: #fff;">
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-gender-male display-4 mb-3"></i>
+                            <h5 class="fw-semibold">Anggota Laki-laki</h5>
+                            <p class="display-6 fw-bold">{{ jumlah_laki_laki }}</p>
+                        </div>
+                    </div>
+                </div>
 
-    </section><!-- /About Section -->
+                <!-- Perempuan -->
+                <div class="col-md-3">
+                    <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient"
+                         style="background: linear-gradient(135deg, #e83e8c, #c2185b); color: #fff;">
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-gender-female display-4 mb-3"></i>
+                            <h5 class="fw-semibold">Anggota Perempuan</h5>
+                            <p class="display-6 fw-bold">{{ jumlah_perempuan }}</p>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Ulang Tahun Section -->
-    <section class="section bg-light rounded">
-      <div class="container section-title aos-init aos-animate" data-aos="fade-up">
-        <h2><i class="bi bi-cake2-fill text-danger"></i> Ulang Tahun Bulan Ini</h2>
-        {% if ulang_tahun_bulan_ini %}
-          <ul class="list-group list-group-flush">
-            {% for orang in ulang_tahun_bulan_ini %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <span>
-                {% if orang.gender == 'M' %}
-                  <i class="bi bi-person-fill text-primary"></i>
+                <!-- Total Anggota -->
+                <div class="col-md-3">
+                    <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient"
+                         style="background: linear-gradient(135deg, #1cc88a, #17a673); color: #fff;">
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-people-fill display-4 mb-3"></i>
+                            <h5 class="fw-semibold">Total Anggota</h5>
+                            <p class="display-6 fw-bold">{{ total_keluarga }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Terakhir -->
+                <div class="col-md-3">
+                    <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient"
+                         style="background: linear-gradient(135deg, #f6c23e, #dda20a); color: #fff;">
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                            <i class="bi bi-clock-history display-4 mb-3"></i>
+                            <h5 class="fw-semibold">Data Terakhir</h5>
+                            {% if keluarga_terakhir %}
+                                <p class="mb-0 fw-bold">{{ keluarga_terakhir.name }}</p>
+                                <small>{{ keluarga_terakhir.created_at|date:"d M Y" }}</small>
+                            {% else %}
+                                <p class="mb-0 fw-bold">Belum ada data</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ulang Tahun Bulan Ini -->
+        <section class="section bg-light rounded mt-5">
+            <div class="container section-title" data-aos="fade-up">
+                <h2><i class="bi bi-cake2-fill text-danger"></i> Ulang Tahun Bulan Ini</h2>
+                {% if ulang_tahun_bulan_ini %}
+                    <ul class="list-group list-group-flush">
+                        {% for orang in ulang_tahun_bulan_ini %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    {% if orang.gender == 'M' %}
+                                        <i class="bi bi-person-fill text-primary"></i>
+                                    {% else %}
+                                        <i class="bi bi-person-fill text-pink"></i>
+                                    {% endif %}
+                                    <a href="{% url 'person_detail' orang.id %}">{{ orang.name }}</a>
+                                </span>
+                                <span class="badge bg-warning text-dark">
+                                    {{ orang.birth_date|date:"d M" }}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 {% else %}
-                  <i class="bi bi-person-fill text-pink"></i>
+                    <p class="text-muted">Tidak ada ulang tahun di bulan ini.</p>
                 {% endif %}
-                <a href="{% url 'person_detail' orang.id %}">{{ orang.name }}</a>
-                
-              </span>
-              <span class="badge bg-warning text-dark">
-                {{ orang.birth_date|date:"d M" }}
-              </span>
-            </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p class="text-muted">Tidak ada ulang tahun di bulan ini.</p>
-        {% endif %}
-      </div>
-    </section>
-    <!-- /Ulang Tahun Section -->
+            </div>
+        </section>
 
-    
-    <!-- Recent Event -->
-    <section id="event" class="about section">
+        <!-- Event Terbaru -->
+        <section id="event" class="section">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Event Terbaru</h2>
+            </div>
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="row gy-4">
+                    <div class="col-lg-6 content">
+                        {% if recent_event %}
+                            <strong>{{ recent_event.title }}</strong><br>
+                            <small>{{ recent_event.created_at|date:"d M Y" }}</small>
+                            <p class="mt-2">
+                                {{ recent_event.content|truncatewords_html:50|safe }}
+                                <a href="{% url 'event_detail' recent_event.pk %}" class="btn btn-sm btn-primary">
+                                    Baca Selengkapnya
+                                </a>
+                            </p>
+                        {% else %}
+                            <p class="text-muted">Tidak ada acara terbaru.</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-6">
+                        {% if recent_event %}
+                            <img src="{{ recent_event.images.first.image.url }}" class="img-fluid rounded shadow" alt="{{ recent_event.title }}">
+                        {% else %}
+                            <img src="{% static 'assets/img/no-event.jpg' %}" class="img-fluid rounded" alt="No Event">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Recent Event</h2>        
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row gy-4">
-          <div class="col-lg-6 content">
-            <p>
-              {% if recent_event %}
-                <strong>{{ recent_event.title }}</strong><br>
-                <small>{{ recent_event.created_at|date:"d M Y" }}</small>
-              {% else %}
-                <strong>Tidak ada acara terbaru.</strong>
-              {% endif %}
-            </p>
-            <p>
-              {{ recent_event.content|truncatewords_html:75|safe }} 
-              {% if recent_event.content|length > 75 %}
-                  <a href="{% url 'event_detail' recent_event.pk %}" class="btn btn-primary btn-sm">Baca Selengkapnya</a>
-              {% endif %}
-            </p>
-            
-          </div>
-          <div class="col-lg-6">
-            {% if recent_event %}
-              <img src="{{ recent_event.images.first.image.url }}" class="img-fluid" alt="{{ recent_event.title }}">
-            {% else %}
-              <img src="{% static 'assets/img/no-event.jpg' %}" class="img-fluid" alt="No Recent Event">
-            {% endif %}
-          </div>
-          
-        </div>
-
-      </div>
-
-    </section><!-- /Recent Event -->
-
-    <!-- Recent Photos Section -->
-    <section id="recent-photos" class="section bg-light rounded">
-
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Recent Photos</h2>        
-      </div>
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="swiper init-swiper">
-          <script type="application/json" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 600,
-              "autoplay": {
-                "delay": 5000
-              },
-              "slidesPerView": "auto",
-              "centeredSlides": true,
-              "pagination": {
-                "el": ".swiper-pagination",
-                "type": "bullets",
-                "clickable": true
-              },
-              "breakpoints": {
-                "320": {
-                  "slidesPerView": 1,
-                  "spaceBetween": 0
-                },
-                "768": {
-                  "slidesPerView": 3,
-                  "spaceBetween": 20
-                },
-                "1200": {
-                  "slidesPerView": 5,
-                  "spaceBetween": 20
-                }
-              }
-            }
-          </script>
-
-          <div class="swiper-wrapper align-items-center">
-            {% for photo in recent_photos %}
-              <div class="swiper-slide">
-                <a class="glightbox" data-gallery="images-gallery" href="{{ photo.image.url }}">
-                  <img src="{{ photo.image.url }}" class="img-fluid" alt="{{ photo.caption|default:'Photo' }}">
-                </a>
-              </div>
-            {% empty %}
-              <p class="text-center">Belum ada foto terbaru.</p>
-            {% endfor %}
-          </div>
-
-          <div class="swiper-pagination"></div>
-        </div>
-
-      </div>
-
+        <!-- Galeri Foto -->
+        <section id="recent-photos" class="section bg-light rounded">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Foto Terbaru</h2>
+            </div>
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="swiper init-swiper">
+                    <script type="application/json" class="swiper-config">
+                        {
+                          "loop": true,
+                          "speed": 600,
+                          "autoplay": { "delay": 5000 },
+                          "slidesPerView": "auto",
+                          "centeredSlides": true,
+                          "pagination": { "el": ".swiper-pagination", "type": "bullets", "clickable": true },
+                          "breakpoints": {
+                            "320": { "slidesPerView": 1, "spaceBetween": 0 },
+                            "768": { "slidesPerView": 3, "spaceBetween": 20 },
+                            "1200": { "slidesPerView": 5, "spaceBetween": 20 }
+                          }
+                        }
+                    </script>
+                    <div class="swiper-wrapper align-items-center">
+                        {% for photo in recent_photos %}
+                            <div class="swiper-slide">
+                                <a class="glightbox" data-gallery="images-gallery" href="{{ photo.image.url }}">
+                                    <img src="{{ photo.image.url }}" class="img-fluid" alt="{{ photo.caption|default:'Photo' }}">
+                                </a>
+                            </div>
+                        {% empty %}
+                            <p class="text-center">Belum ada foto terbaru.</p>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </section>
     </section>
 
-
-
-  <!-- Statistik Keluarga -->
-  <section class="section">
-    <div class="container section-title aos-init aos-animate" data-aos="fade-up">
-      <h2 class="mb-4">Statistik Keluarga</h2>
-      <div class="row text-center g-4">
-
-        <!-- Laki-laki -->
-        <div class="col-md-3">
-          <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient" style="background: linear-gradient(135deg, #4e73df, #224abe); color: rgb(223, 14, 14);">
-            <div class="card-body d-flex flex-column align-items-center justify-content-center">
-              <i class="bi bi-gender-male display-4 mb-3"></i>
-              <h5 class="fw-semibold">Anggota Laki-laki</h5>
-              <p class="display-6 fw-bold">{{ jumlah_laki_laki }}</p>
-            </div>
-          </div>
+{% else %}
+    <!-- LANDING PAGE UNTUK PENGUNJUNG BELUM LOGIN -->
+    <section class="section text-center py-5" style="background: linear-gradient(135deg, #f0f2f5, #e4e9f2);">
+        <div class="container">
+            <h1 class="mb-4">Selamat Datang di Family Tree SaaS</h1>
+            <p class="lead mb-5">
+                Buat dan kelola pohon keluargamu secara online. Tambahkan anggota keluarga, buat event, dan abadikan momen-momen penting bersama.
+            </p>
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 me-2">Daftar Sekarang</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg px-4">Login</a>
         </div>
+    </section>
 
-        <!-- Perempuan -->
-        <div class="col-md-3">
-          <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient" style="background: linear-gradient(135deg, #e83e8c, #c2185b); color: rgb(223, 14, 14);">
-            <div class="card-body d-flex flex-column align-items-center justify-content-center">
-              <i class="bi bi-gender-female display-4 mb-3"></i>
-              <h5 class="fw-semibold">Anggota Perempuan</h5>
-              <p class="display-6 fw-bold">{{ jumlah_perempuan }}</p>
+    <!-- Hero Carousel untuk Landing Page -->
+    <section id="hero" class="hero section mt-5">
+        <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+            {% for img in image_carousel %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img src="{{ img.image.url }}" alt="" class="w-100">
             </div>
-          </div>
+            {% endfor %}
+            <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
+            </a>
+            <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
+            </a>
         </div>
+    </section>
+{% endif %}
 
-        <!-- Total Anggota -->
-        <div class="col-md-3">
-          <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient" style="background: linear-gradient(135deg, #1cc88a, #17a673); color: rgb(223, 14, 14);">
-            <div class="card-body d-flex flex-column align-items-center justify-content-center">
-              <i class="bi bi-people-fill display-4 mb-3"></i>
-              <h5 class="fw-semibold">Total Anggota</h5>
-              <p class="display-6 fw-bold">{{ total_keluarga }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Data Terakhir -->
-        <div class="col-md-3">
-          <div class="card shadow-lg border-0 rounded-4 h-100 bg-gradient" style="background: linear-gradient(135deg, #f6c23e, #dda20a); color: rgb(223, 14, 14);">
-            <div class="card-body d-flex flex-column align-items-center justify-content-center">
-              <i class="bi bi-clock-history display-4 mb-3"></i>
-              <h5 class="fw-semibold">Data Terakhir</h5>
-              <p class="mb-0 fw-bold">{{ keluarga_terakhir.name }}</p>
-              <small>{{ keluarga_terakhir.created_at|date:"d M Y" }}</small>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  </main>
+</main>
 {% endblock %}

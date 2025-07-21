@@ -15,7 +15,7 @@ urlpatterns = [
     path('person/<str:uuid>/', views.person_detail, name='person_detail'),
     path('register/', views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='treeapp/login.html',authentication_form=CustomAuthForm), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     
     path('anggota/tambah/<str:url_asal>', views.tambah_or_edit_anggota_view, name='tambah_anggota'),
