@@ -8,7 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import RestrictedError
 from django.db import models
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
+from django.views.decorators.csrf import csrf_exempt
+
 
 @login_required
 def tambah_pasangan_view(request):
@@ -385,9 +387,22 @@ def input_data(request):
 
     return render(request, 'treeapp/input.html', context)
 
-def build_person_node(person):
-        
+@csrf_exempt
+def family_tree_json(request, person_uuid):
+    """
+    Endpoint publik untuk menghasilkan JSON pohon keluarga.
+    Bisa diakses siapa saja (tanpa login).
+    """
+    try:
+        person = get_object_or_404(Person, uuid=person_uuid)
+        tree_data = build_person_node(person)
+        return JsonResponse(tree_data, safe=False)
+    except Http404:
+        return JsonResponse({'error': 'Person not found'}, status=404)
+    
+def build_person_node(person):        
         # Ambil semua pernikahan sebagai suami atau istri
+        
         if person.gender == 'M':
             marriages = Marriage.objects.filter(husband=person)
         else:

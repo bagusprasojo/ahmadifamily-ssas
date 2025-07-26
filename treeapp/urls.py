@@ -30,6 +30,8 @@ urlpatterns = [
     path('anak/tambah_tree/', views.tambah_anak_tree, name='tambah_anak_tree'),
     path('anak/<str:uuid>/hapus/', views.hapus_anak_view, name='hapus_anak'),
     path('tambah_pasangan/', views.tambah_pasangan_view, name='tambah_pasangan'),
+
+    path('api/family-tree/<uuid:person_uuid>/', views.family_tree_json, name='family_tree_json'),
     
 
 

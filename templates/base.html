@@ -79,6 +79,21 @@
               <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
               <li><a href="{% url 'logout' %}">Logout</a></li>
           {% else %}
+              <!-- Dropdown ke section -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="sectionsDropdown" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Jelajahi
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="sectionsDropdown">
+                  <li><a class="dropdown-item" href="#hero">Kenapa Penting?</a></li>
+                  <li><a class="dropdown-item" href="#features">Fitur Utama</a></li>
+                  <li><a class="dropdown-item" href="#how-it-works">Cara Kerja</a></li>
+                  <li><a class="dropdown-item" href="#testimonials">Cerita Pengguna</a></li>
+                  <li><a class="dropdown-item" href="#cta">Daftar Sekarang</a></li>
+                </ul>
+              </li>
+              
               <li><a href="{% url 'login' %}">Login</a></li>
           {% endif %}
           

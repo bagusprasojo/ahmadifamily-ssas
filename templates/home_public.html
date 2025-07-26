@@ -106,53 +106,45 @@
   </section>
 
   <!-- Section 3: Cara Kerja -->
-  <section id="how-it-works" class="section py-5 bg-light">
-    <div class="container text-center">
-      <h2 class="mb-4">Bagaimana Cara Kerjanya?</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="p-4 border rounded bg-white h-100">
-            <span class="display-4 text-primary fw-bold">1</span>
-            <h5 class="mt-3">Daftar & Buat Keluarga</h5>
-            <p class="text-muted">Buat akun dan mulai kelola pohon keluarga Anda.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="p-4 border rounded bg-white h-100">
-            <span class="display-4 text-success fw-bold">2</span>
-            <h5 class="mt-3">Tambah Anggota & Pernikahan</h5>
-            <p class="text-muted">Input data anggota dan hubungan mereka secara cepat.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="p-4 border rounded bg-white h-100">
-            <span class="display-4 text-danger fw-bold">3</span>
-            <h5 class="mt-3">Lihat & Kelola Pohon</h5>
-            <p class="text-muted">Eksplorasi pohon keluarga interaktif dan kelola acara.</p>
-          </div>
-        </div>
+  <section id="how-it-works" class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Bagaimana Cara Kerjanya?</h2>
+      <p class="text-muted">Hanya 3 langkah mudah untuk mengelola keluarga Anda.</p>
+    </div>
+    <div class="row text-center g-4">
+      <!-- Langkah 1 -->
+      <div class="col-md-4">
+        <img src="{% static 'assets/img/step1b-register.png' %}" 
+             class="img-fluid mb-3" alt="Daftar Akun" style="max-width: 150px;">
+        <h5 class="fw-semibold">1. Daftar Akun</h5>
+        <p class="text-muted">Buat akun keluarga Anda secara gratis dan aman.</p>
+      </div>
+
+      <!-- Langkah 2 -->
+      <div class="col-md-4">
+        <img src="{% static 'assets/img/step2a-add-family.png' %}" 
+             class="img-fluid mb-3" alt="Tambahkan Data" style="max-width: 150px;">
+        <h5 class="fw-semibold">2. Tambahkan Data Keluarga</h5>
+        <p class="text-muted">Masukkan anggota, riwayat, dan foto keluarga Anda.</p>
+      </div>
+
+      <!-- Langkah 3 -->
+      <div class="col-md-4">
+        <img src="{% static 'assets/img/step3a-tree.png' %}" 
+             class="img-fluid mb-3" alt="Lihat Pohon Keluarga" style="max-width: 150px;">
+        <h5 class="fw-semibold">3. Jelajahi Pohon Keluarga</h5>
+        <p class="text-muted">Lihat hubungan keluarga Anda dalam bentuk digital interaktif.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- Section 4: Galeri & Testimoni -->
-  <section id="gallery" class="section py-5 bg-white">
-    <div class="container text-center">
-      <h2 class="mb-4">Kenangan Keluarga</h2>
-      <div class="row g-3 justify-content-center">
-        {% for photo in recent_photos %}
-        <div class="col-6 col-md-3">
-          <a class="glightbox" data-gallery="landing-gallery" href="{{ photo.image.url }}">
-            <img src="{{ photo.image.url }}" class="img-fluid rounded shadow" alt="{{ photo.caption|default:'Photo' }}">
-          </a>
-        </div>
-        {% empty %}
-        <p class="text-muted">Belum ada foto keluarga yang ditambahkan.</p>
-        {% endfor %}
-      </div>
-
-      <!-- Testimoni -->
-      <div class="mt-5">
+  <section id="testimonials" class="section py-5 bg-white">
+    <div class="container text-center">      
+      <div class="mt-5" >
         <blockquote class="blockquote text-center">
           <p class="mb-3 fst-italic">"Dengan SSAS Family, keluarga besar kami bisa tetap terhubung dan saling mengenal meski tersebar di berbagai kota."</p>
           <footer class="blockquote-footer">Pengguna SSAS Family</footer>
