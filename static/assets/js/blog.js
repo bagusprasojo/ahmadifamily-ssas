@@ -1,5 +1,5 @@
 
-<script>
+
   // Ambil postingan via Blogger JSON Feed
   fetch('https://www.tokoumi.com/feeds/posts/default?alt=json&max-results=5')
     .then(response => response.json())
@@ -29,4 +29,4 @@
       });
     })
     .catch(error => console.error('Gagal memuat postingan:', error));
-</script>
+
