@@ -1,7 +1,7 @@
 
 <script>
   // Ambil postingan via Blogger JSON Feed
-  fetch('/feeds/posts/default?alt=json&max-results=5')
+  fetch('https://www.tokoumi.com/feeds/posts/default?alt=json&max-results=5')
     .then(response => response.json())
     .then(data => {
       const posts = data.feed.entry || [];
