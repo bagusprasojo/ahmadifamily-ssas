@@ -1,5 +1,5 @@
 // Ambil postingan via Blogger JSON Feed
-fetch('https://www.tokoumi.com/feeds/posts/default?alt=json&max-results=5')
+// fetch('https://www.tokoumi.com/feeds/posts/default?alt=json&max-results=5')
 fetch('https://www.tokoumi.com/feeds/posts/default/-/Produk?alt=json&max-results=5')
 
   .then(response => response.json())
