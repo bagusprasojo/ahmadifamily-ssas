@@ -1,5 +1,7 @@
 // Ambil postingan via Blogger JSON Feed
 fetch('https://www.tokoumi.com/feeds/posts/default?alt=json&max-results=5')
+fetch('https://www.tokoumi.com/feeds/posts/default/-/Produk?alt=json&max-results=5')
+
   .then(response => response.json())
   .then(data => {
     const posts = data.feed.entry || [];
@@ -23,15 +25,15 @@ fetch('https://www.tokoumi.com/feeds/posts/default?alt=json&max-results=5')
       const snippet = content.replace(/<[^>]+>/g, '').substring(0, 100);
 
       const col = document.createElement('div');
-      col.className = 'col-md-6 col-lg-4';
+      col.className = 'col-6 col-md-4 col-lg-3';
 
       col.innerHTML = `
-        <div class='card h-100 shadow-sm'>
+        <div class='card product-card'>
           <img src='${imgSrc}' class='card-img-top' alt='${title}' />
-          <div class='card-body'>
+          <div class='card-body text-center'>
             <h5 class='card-title'><a href='${link}'>${title}</a></h5>
             <p class='card-text'>${snippet}...</p>
-            <a class='btn btn-sm btn-primary' href='${link}'>Baca Selengkapnya</a>
+            <a class='btn btn-sm btn-dark' href='${link}'>Baca Selengkapnya</a>
           </div>
         </div>
       `;
