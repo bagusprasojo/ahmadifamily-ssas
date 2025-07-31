@@ -1,6 +1,6 @@
 
 
-  // Ambil postingan via Blogger JSON Feed
+  // Ambil postingan via Blogger JSON Feed, hilangkan script
   fetch('https://www.tokoumi.com/feeds/posts/default?alt=json&max-results=5')
     .then(response => response.json())
     .then(data => {
